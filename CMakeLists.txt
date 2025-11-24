@@ -9,6 +9,10 @@ if(WIN32)
     find_library(PCAP_LIBRARY NAMES wpcap PATHS "${PCAP_ROOT}/Lib/x64")
 else()
     find_package(PCAP REQUIRED)  # Linux/Mac
+    pkg_check_modules(PCAP REQUIRED libpcap)
+
+    set(PCAP_INCLUDE_DIR ${PCAP_INCLUDE_DIRS}))
+    set(PCAP_LIBRARY ${PCAP_LIBRARIES}))
 endif()
 
 add_executable(Analyzer
