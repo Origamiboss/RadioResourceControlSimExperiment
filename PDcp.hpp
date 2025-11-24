@@ -8,6 +8,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <optional>
 
 class PcapLogger; // forward
 
@@ -36,7 +37,7 @@ public:
     Bytes encapsulate(const Bytes& payload);
 
     // call this when PDCP receives a raw packet from lower layers
-    std::optional<Bytes> PDcp::onReceive(const Bytes& raw);
+    std::optional<Bytes> onReceive(const Bytes& raw);
 
     // debugging
     std::string status() const;

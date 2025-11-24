@@ -1,5 +1,2 @@
-[2025-11-24 14:05:53] Network RRC Layer initialized (State: IDLE)
-[2025-11-24 14:05:53] [UE → Network] Received RRCConnectionRequest
-[2025-11-24 14:05:54] [Network → UE] Sent RRCConnectionSetup
-[2025-11-24 14:05:55] [UE → Network] Received RRCConnectionComplete
-[2025-11-24 14:05:56] [Network → UE] Sent RRCRelease
+[2025-11-24 16:47:35] Network RRC Layer initialized (State: IDLE)
+[2025-11-24 16:47:37] [UE → Network] Received RRCConnectionRequest

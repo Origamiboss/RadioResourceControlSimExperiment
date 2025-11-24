@@ -15,8 +15,8 @@ private:
     PcapLogger pcapLogger{"../Logs/ue_rrc.pcap"};
 
     //Packet Queue
-    PacketBuffer myBuffer;
-    PacketBuffer theirBuffer;
+    PacketBuffer* myBuffer;
+    PacketBuffer* theirBuffer;
 
 public:
     UeRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer);
@@ -31,7 +31,7 @@ public:
 
     void receiveRrcRelease();
 
-    void checkForPackets(const std::vector<uint8_t>& rawPacket);
+    void checkForPackets();
 
     void log(const std::string& msg);
     

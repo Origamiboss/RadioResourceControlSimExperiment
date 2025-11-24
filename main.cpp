@@ -19,10 +19,10 @@
 
 int main() {
 
-    PacketBuffer ueBuffer;
-    PacketBuffer networkBuffer;
-    UeRrc ue = UeRrc(ueBuffer, networkBuffer);
-    NetworkRrc network = NetworkRrc(networkBuffer, ueBuffer);
+    PacketBuffer ueBuffer, networkBuffer;
+    UeRrc ue(&ueBuffer, &networkBuffer);  // Pass pointers instead of references
+    NetworkRrc network(&networkBuffer, &ueBuffer);
+
     
 
 

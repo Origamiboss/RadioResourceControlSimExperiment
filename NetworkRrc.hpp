@@ -30,8 +30,8 @@ private:
     std::unique_ptr<pdcp::PDcp> pdcp_;  // PDCP instance
 
     //Packet Queue
-    PacketBuffer myBuffer;
-    PacketBuffer theirBuffer;
+    PacketBuffer* myBuffer;
+    PacketBuffer* theirBuffer;
 };
 
 #endif // NETWORKRRC_HPP

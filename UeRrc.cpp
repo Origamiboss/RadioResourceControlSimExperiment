@@ -46,7 +46,7 @@ void UeRrc::sendRrcConnectionRequest() {
         logFile << "[" << getCurrentTimestamp() << "] [UE → Network] sent RRCConnectionRequest\n";
         std::cout << "Sent RRCConnectionRequest\n";
 
-        theirBuffer.sendPacket(pdcpPacket);
+        theirBuffer->sendPacket(pdcpPacket);
     }
 }
 
@@ -70,7 +70,7 @@ void UeRrc::sendRrcConnectionComplete() {
         logFile << "[" << getCurrentTimestamp() << "] [UE → Network] sent RRCConnectionComplete\n";
         std::cout << "Sent RRCConnectionComplete\n";
 
-        theirBuffer.sendPacket(pdcpPacket);
+        theirBuffer->sendPacket(pdcpPacket);
     }
 }
 
@@ -84,23 +84,40 @@ void UeRrc::receiveRrcRelease() {
 }
 
 void UeRrc::checkForPackets() {
-    //Check for a packet
-    if(myBuffer.empty()) return;
-    auto optPacket = myBuffer.getPacket();
-    std::optional<Bytes> payload = pdcp_->onReceive(optPacket);
-    if(!payload) return;
-    
-    //Data is already dicyphered
+    if(myBuffer->empty()) {
+        std::cout << "UE Buffer is empty. No packets to check.\n";
+        return;
+    }
 
+    auto optPacket = myBuffer->getPacket();
+    if (!optPacket) {
+        std::cout << "No packet available in buffer.\n";
+        return;
+    }
+
+    auto payload = pdcp_->onReceive(*optPacket);  // Assuming payload is a valid packet
+
+    if (!payload) {
+        std::cout << "No payload received from PDCP.\n";
+        return;
+    }
+
+    std::cout << "Payload received: ";
+    for (auto byte : *payload) {
+        std::cout << std::hex << static_cast<int>(byte) << " ";
+    }
+    std::cout << std::dec << "\n";  // reset to decimal for other outputs
+
+    // Process payload here
     auto data = *payload;
-    //Determine if the packet is ours
+
     if (data == Bytes{0x5F, 0x21}) {
         receiveRrcRelease();
-    }
-    else if (data == Bytes{0x50, 0xAA}) {
+    } else if (data == Bytes{0x50, 0xAA}) {
         receiveRrcConnectionSetup();
     }
 }
+
 
 void UeRrc::log(const std::string& msg) {
     logFile << "[" << getCurrentTimestamp() << "] " << msg << std::endl;

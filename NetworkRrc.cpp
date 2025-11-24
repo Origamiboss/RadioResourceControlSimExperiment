@@ -50,7 +50,7 @@ void NetworkRrc::sendRrcConnectionSetup() {
         logFile << "[" << getCurrentTimestamp() << "] [Network → UE] Sent RRCConnectionSetup\n";
         std::cout << "Sent RRCConnectionSetup\n";
 
-        theirBuffer.sendPacket(pdcpPacket);
+        theirBuffer->sendPacket(pdcpPacket);
 
         state = RrcState::RRC_CONNECTED;
     }
@@ -75,31 +75,47 @@ void NetworkRrc::sendRrcRelease() {
         logFile << "[" << getCurrentTimestamp() << "] [Network → UE] Sent RRCRelease\n";
         std::cout << "Sent RRCRelease\n";
 
-        theirBuffer.sendPacket(pdcpPacket);
+        theirBuffer->sendPacket(pdcpPacket);
 
         state = RrcState::RRC_IDLE;
     }
 }
 
 void NetworkRrc::checkForPackets() {
-    //Check for a packet
-    if(myBuffer.empty()) return;
-    auto optPacket = myBuffer.getPacket();
-    std::optional<Bytes> payload = pdcp_->onReceive(optPacket);
-    
-    if(!payload) return;
-    
-    //Data is already unencrypted
+    if(myBuffer->empty()) {
+        std::cout << "BaseStation Buffer is empty. No packets to check.\n";
+        return;
+    }
 
+    auto optPacket = myBuffer->getPacket();
+    if (!optPacket) {
+        std::cout << "No packet available in buffer.\n";
+        return;
+    }
+
+    auto payload = pdcp_->onReceive(*optPacket);  // Assuming payload is a valid packet
+
+    if (!payload) {
+        std::cout << "No payload received from PDCP.\n";
+        return;
+    }
+
+    std::cout << "Payload received: ";
+    for (auto byte : *payload) {
+        std::cout << std::hex << static_cast<int>(byte) << " ";
+    }
+    std::cout << std::dec << "\n";  // reset to decimal for other outputs
+
+    // Process payload here
     auto data = *payload;
-    //Determine if the packet is ours
+
     if (data == Bytes{0x40, 0x12}) {
         receiveRrcConnectionRequest();
-    }
-    else if (data == Bytes{0x43, 0x34}) {
+    } else if (data == Bytes{0x50, 0xAA}) {
         receiveRrcConnectionComplete();
     }
 }
+
 
 // Move the log function inside the class, making it a member function
 void NetworkRrc::log(const std::string& message) {

@@ -3,6 +3,7 @@
 #include "PcapLogger.hpp" // optional logging
 #include "Utils.hpp"
 #include <sstream>
+#include "PacketBuffer.hpp"
 
 using namespace pdcp;
 
@@ -70,7 +71,7 @@ std::optional<Bytes> PDcp::onReceive(const Bytes& raw){
     PdcpHeader hdr;
     Bytes payload;
     if(!parsePacket(raw, hdr, payload)){
-        return;
+        return std::nullopt;
     }
 
     std::lock_guard<std::mutex> lk(mtx_);
