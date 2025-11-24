@@ -1,6 +1,7 @@
 // src/PDcp.cpp
 #include "PDcp.hpp"
 #include "PcapLogger.hpp" // optional logging
+#include "Utils.hpp"
 #include <sstream>
 
 using namespace pdcp;
@@ -45,7 +46,7 @@ PDcp::Bytes PDcp::makePacket(uint8_t sn, const Bytes& payload){
 
     // optional PCAP logging
     if(pcapLogger_){
-        pcapLogger_->logRawPacket(out.data(), out.size(), name_);
+        pcapLogger_->logRawPacket(out, name_);
     }
 
     return out;

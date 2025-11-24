@@ -7,8 +7,8 @@
 #include <iostream>
 #include "PDcp.hpp"
 #include "PcapLogger.hpp"
+#include "Utils.hpp"
 
-std::string getCurrentTimestamp();
 
 UeRrc::UeRrc() {
     logFile.open("../Logs/ue_rrc_log.txt");
@@ -78,6 +78,10 @@ void UeRrc::receiveRrcRelease() {
 
 void UeRrc::receiveFromNetwork(const std::vector<uint8_t>& rawPacket) {
     pdcp_->onReceive(rawPacket);
+}
+
+void UeRrc::log(const std::string& msg) {
+    logFile << "[" << getCurrentTimestamp() << "] " << msg << std::endl;
 }
 
 [[maybe_unused]] RrcState UeRrc::getState() const {

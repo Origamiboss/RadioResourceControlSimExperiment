@@ -1,11 +1,12 @@
 #include "NetworkRrc.hpp"
 #include <iostream>
+#include <fstream>
 #include "PDcp.hpp"
 #include "PcapLogger.hpp"
+#include "Utils.hpp"
 
-std::string getCurrentTimestamp();
 
-NetworkRrc::NetworkRrc() {
+NetworkRrc::NetworkRrc() : pcapLogger("network.pcap") {  // Provide a filename here
     logFile.open("../Logs/network_rrc_log.txt");
     logFile << "[" << getCurrentTimestamp() << "] Network RRC Layer initialized (State: IDLE)\n";
 
@@ -77,6 +78,12 @@ void NetworkRrc::receiveFromUe(const std::vector<uint8_t>& rawPacket) {
     pdcp_->onReceive(rawPacket);
 }
 
+// Move the log function inside the class, making it a member function
+void NetworkRrc::log(const std::string& message) {
+    logFile << "[" << getCurrentTimestamp() << "] " << message << std::endl;
+}
+
 RrcState NetworkRrc::getState() const {
     return state;
 }
+

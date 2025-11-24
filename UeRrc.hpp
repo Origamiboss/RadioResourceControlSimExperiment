@@ -4,12 +4,8 @@
 #include <fstream>
 #include "PcapLogger.hpp"
 #include "PDcp.hpp"
-    
+#include "RrcState.hpp"
 
-
-enum class RrcState {
-    RRC_IDLE, RRC_CONNECTING, RRC_CONNECTED
-};
 
 class UeRrc {
 private:
@@ -31,5 +27,9 @@ public:
 
     void receiveRrcRelease();
 
+    void receiveFromNetwork(const std::vector<uint8_t>& rawPacket);
+
+    void log(const std::string& msg);
+    
     [[maybe_unused]] RrcState getState() const;
 };

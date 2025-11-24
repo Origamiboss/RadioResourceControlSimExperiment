@@ -19,4 +19,5 @@ public:
     PcapLogger(const std::string& filename);
     ~PcapLogger();
     void logPacket(const std::vector<uint8_t>& packet, const std::string& comment);
+    void logRawPacket(const std::vector<uint8_t>& packet, const std::string& comment);
 };
