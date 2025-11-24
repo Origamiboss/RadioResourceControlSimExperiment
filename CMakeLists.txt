@@ -17,6 +17,7 @@ add_executable(Analyzer
         NetworkRrc.hpp NetworkRrc.cpp
         PcapLogger.hpp
         PcapLogger.cpp
+        src/PDcp.hpp src/PDcp.cpp
 )
 
 
