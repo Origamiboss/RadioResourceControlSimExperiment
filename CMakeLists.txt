@@ -11,8 +11,8 @@ else()
     find_package(PCAP REQUIRED)  # Linux/Mac
     pkg_check_modules(PCAP REQUIRED libpcap)
 
-    set(PCAP_INCLUDE_DIR ${PCAP_INCLUDE_DIRS}))
-    set(PCAP_LIBRARY ${PCAP_LIBRARIES}))
+    set(PCAP_INCLUDE_DIR ${PCAP_INCLUDE_DIRS})
+    set(PCAP_LIBRARY ${PCAP_LIBRARIES})
 endif()
 
 add_executable(Analyzer
