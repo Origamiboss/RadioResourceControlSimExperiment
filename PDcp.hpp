@@ -36,7 +36,7 @@ public:
     Bytes encapsulate(const Bytes& payload);
 
     // call this when PDCP receives a raw packet from lower layers
-    void onReceive(const Bytes& raw);
+    std::optional<Bytes> PDcp::onReceive(const Bytes& raw);
 
     // debugging
     std::string status() const;

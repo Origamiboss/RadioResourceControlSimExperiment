@@ -6,17 +6,18 @@
 #include "PcapLogger.hpp"  // Include this for full definition of PcapLogger
 #include "PDcp.hpp"   // Assuming PDcp is required for PDcp class
 #include "RrcState.hpp"
+#include "PacketBuffer.hpp"
 
 class NetworkRrc {
 public:
-    NetworkRrc();
+    NetworkRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer);
     ~NetworkRrc();
 
     void receiveRrcConnectionRequest();
     void sendRrcConnectionSetup();
     void receiveRrcConnectionComplete();
     void sendRrcRelease();
-    void receiveFromUe(const std::vector<uint8_t>& rawPacket);
+    void checkForPackets();
 
     RrcState getState() const;
 
@@ -27,6 +28,10 @@ private:
     std::ofstream logFile;  // Log file
     PcapLogger pcapLogger;  // Full definition of PcapLogger should be available
     std::unique_ptr<pdcp::PDcp> pdcp_;  // PDCP instance
+
+    //Packet Queue
+    PacketBuffer myBuffer;
+    PacketBuffer theirBuffer;
 };
 
 #endif // NETWORKRRC_HPP

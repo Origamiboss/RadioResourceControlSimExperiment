@@ -5,7 +5,7 @@
 #include "PcapLogger.hpp"
 #include "PDcp.hpp"
 #include "RrcState.hpp"
-
+#include "PacketBuffer.hpp"
 
 class UeRrc {
 private:
@@ -14,8 +14,12 @@ private:
     std::ofstream logFile;
     PcapLogger pcapLogger{"../Logs/ue_rrc.pcap"};
 
+    //Packet Queue
+    PacketBuffer myBuffer;
+    PacketBuffer theirBuffer;
+
 public:
-    UeRrc();
+    UeRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer);
 
     ~UeRrc();
 
@@ -27,7 +31,7 @@ public:
 
     void receiveRrcRelease();
 
-    void receiveFromNetwork(const std::vector<uint8_t>& rawPacket);
+    void checkForPackets(const std::vector<uint8_t>& rawPacket);
 
     void log(const std::string& msg);
     

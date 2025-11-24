@@ -66,7 +66,7 @@ PDcp::Bytes PDcp::encapsulate(const Bytes& payload){
     return makePacket(sn, payload);
 }
 
-void PDcp::onReceive(const Bytes& raw){
+std::optional<Bytes> PDcp::onReceive(const Bytes& raw){
     PdcpHeader hdr;
     Bytes payload;
     if(!parsePacket(raw, hdr, payload)){
@@ -75,23 +75,25 @@ void PDcp::onReceive(const Bytes& raw){
 
     std::lock_guard<std::mutex> lk(mtx_);
     // if this is the expected SN, deliver and advance
-    if(hdr.sn == rxExpectSn_){
-        if(deliverCb_) deliverCb_(payload);
+    if (hdr.sn == rxExpectSn_) {
+        Bytes out = payload;   // copy for return value
+
         rxExpectSn_ = uint8_t((rxExpectSn_ + 1) & 0xFF);
 
-        // flush any buffered consecutive SNs
-        while(true){
+        // flush reorder buffer (but only return first one)
+        while (true) {
             auto it = reorderBuffer_.find(rxExpectSn_);
-            if(it == reorderBuffer_.end()) break;
-            if(deliverCb_) deliverCb_(it->second);
-            reorderBuffer_.erase(it);
+            if (it == reorderBuffer_.end()) break;
+
+            // (optional: deliver but not return more than one)
             rxExpectSn_ = uint8_t((rxExpectSn_ + 1) & 0xFF);
+            reorderBuffer_.erase(it);
         }
-    } else {
-        // out-of-order -> buffer (demo: naive, no max window)
-        reorderBuffer_.emplace(hdr.sn, payload);
+
+        return out;
     }
-    
+    reorderBuffer_.emplace(hdr.sn, payload);
+    return std::nullopt;
     // optional pcap log for received packet already handled in parsePacket if needed
 }
 

@@ -16,6 +16,8 @@ private:
     pcap_t* pcap_handle;
     pcap_dumper_t* pcap_dumper;
     void printPacketHex(const std::vector<uint8_t>& packet);
+
+    
 public:
     PcapLogger(const std::string& filename);
     ~PcapLogger();

@@ -10,7 +10,10 @@
 #include "Utils.hpp"
 
 
-UeRrc::UeRrc() {
+UeRrc::UeRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer) {
+    this->myBuffer = myBuffer;
+    this->theirBuffer = theirBuffer;
+
     logFile.open("../Logs/ue_rrc_log.txt");
     logFile << "[" << getCurrentTimestamp() << "] UE RRC Layer initialized (State: IDLE)\n";
 
@@ -42,6 +45,8 @@ void UeRrc::sendRrcConnectionRequest() {
 
         logFile << "[" << getCurrentTimestamp() << "] [UE → Network] sent RRCConnectionRequest\n";
         std::cout << "Sent RRCConnectionRequest\n";
+
+        theirBuffer.sendPacket(pdcpPacket);
     }
 }
 
@@ -64,6 +69,8 @@ void UeRrc::sendRrcConnectionComplete() {
 
         logFile << "[" << getCurrentTimestamp() << "] [UE → Network] sent RRCConnectionComplete\n";
         std::cout << "Sent RRCConnectionComplete\n";
+
+        theirBuffer.sendPacket(pdcpPacket);
     }
 }
 
@@ -76,8 +83,23 @@ void UeRrc::receiveRrcRelease() {
     }
 }
 
-void UeRrc::receiveFromNetwork(const std::vector<uint8_t>& rawPacket) {
-    pdcp_->onReceive(rawPacket);
+void UeRrc::checkForPackets() {
+    //Check for a packet
+    if(myBuffer.empty()) return;
+    auto optPacket = myBuffer.getPacket();
+    std::optional<Bytes> payload = pdcp_->onReceive(optPacket);
+    if(!payload) return;
+    
+    //Data is already dicyphered
+
+    auto data = *payload;
+    //Determine if the packet is ours
+    if (data == Bytes{0x5F, 0x21}) {
+        receiveRrcRelease();
+    }
+    else if (data == Bytes{0x50, 0xAA}) {
+        receiveRrcConnectionSetup();
+    }
 }
 
 void UeRrc::log(const std::string& msg) {

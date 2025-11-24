@@ -14,13 +14,17 @@
 #include <thread>
 #include "UeRrc.hpp"
 #include "NetworkRrc.hpp"
+#include "PacketBuffer.hpp"
 // #include <pcap.h>
 
 int main() {
 
+    PacketBuffer ueBuffer;
+    PacketBuffer networkBuffer;
+    UeRrc ue = UeRrc(ueBuffer, networkBuffer);
+    NetworkRrc network = NetworkRrc(networkBuffer, ueBuffer);
+    
 
-    UeRrc ue;
-    NetworkRrc network;
 
     std::cout << "=== LTE RRC Simulator ===\n";
 
@@ -31,7 +35,7 @@ int main() {
 
     // Network handles request
     std::thread networkThread([&]() {
-        network.receiveRrcConnectionRequest();
+        network.checkForPackets();
         std::this_thread::sleep_for(std::chrono::seconds(1));
         network.sendRrcConnectionSetup();
     });
@@ -40,16 +44,16 @@ int main() {
     networkThread.join();
 
     // UE processes setup
-    ue.receiveRrcConnectionSetup();
+    ue.checkForPackets();
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
     // UE sends completion, network receives
     ue.sendRrcConnectionComplete();
-    network.receiveRrcConnectionComplete();
+    network.checkForPackets();
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
     network.sendRrcRelease();
-    ue.receiveRrcRelease();
+    ue.checkForPackets();
 
     std::cout << "\nSimulation complete. Check Logs/ for details.\n";
     return 0;
