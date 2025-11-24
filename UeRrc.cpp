@@ -34,6 +34,13 @@ UeRrc::~UeRrc() {
     logFile.close();
 }
 
+void UeRrc::run() {
+    while (state != RrcState::RRC_IDLE) {
+        checkForPackets();
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    }
+}
+
 void UeRrc::sendRrcConnectionRequest() {
     if (state == RrcState::RRC_IDLE) {
         state = RrcState::RRC_CONNECTING;
@@ -77,7 +84,6 @@ void UeRrc::sendRrcConnectionComplete() {
 void UeRrc::receiveRrcRelease() {
     if (state == RrcState::RRC_CONNECTED) {
         state = RrcState::RRC_IDLE;
-
         logFile << "[" << getCurrentTimestamp() << "] [Network → UE] RRC Release received, back to IDLE\n";
         std::cout << "Received RRCRelease\n";
     }

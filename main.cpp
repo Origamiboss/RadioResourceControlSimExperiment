@@ -31,29 +31,25 @@ int main() {
     // UE initiates connection
     std::thread ueThread([&]() {
         ue.sendRrcConnectionRequest();
+        ue.run();
     });
 
     // Network handles request
     std::thread networkThread([&]() {
-        network.checkForPackets();
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        network.sendRrcConnectionSetup();
+        network.run();
     });
 
     ueThread.join();
     networkThread.join();
 
     // UE processes setup
-    ue.checkForPackets();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::seconds(3));
 
     // UE sends completion, network receives
     ue.sendRrcConnectionComplete();
-    network.checkForPackets();
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
     network.sendRrcRelease();
-    ue.checkForPackets();
 
     std::cout << "\nSimulation complete. Check Logs/ for details.\n";
     return 0;

@@ -30,12 +30,20 @@ NetworkRrc::~NetworkRrc() {
     logFile.close();
 }
 
+void NetworkRrc::run() {
+    while (state != RrcState::RRC_IDLE) {
+        checkForPackets();
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));
+    }
+}
+
 void NetworkRrc::receiveRrcConnectionRequest() {
     if (state == RrcState::RRC_IDLE) {
         state = RrcState::RRC_CONNECTING;
 
         logFile << "[" << getCurrentTimestamp() << "] [UE → Network] Received RRCConnectionRequest\n";
         std::cout << "Network received RRCConnectionRequest\n";
+        sendRrcConnectionSetup();
     }
 }
 
