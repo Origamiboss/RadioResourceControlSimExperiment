@@ -1,9 +1,53 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
+### Visual Studio ###
 .vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build output
+build/
+build-debug/
+build-release/
+cmake-build-*/
+out/
+bin/
+obj/
+Debug/
+Release/
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+
+# IDE folders
+shelf/
+workspace.xml
+httpRequests/
+dataSources/
+dataSources.local.xml
+
+# Logs
+*.log
+
+# Compiled objects
+*.o
+*.obj
+*.pdb
+*.lib
+*.dll
+*.exe
+*.so
+*.a
+
+# Other misc
+*.cache
+*.ipch
+*.tlog
+*.lastbuildstate
+*.vsp
+*.vspscc
+*.vscode/
