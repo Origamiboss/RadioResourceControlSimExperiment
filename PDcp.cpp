@@ -33,7 +33,27 @@ uint8_t PDcp::nextRxExpectSn(){
     return rxExpectSn_;
 }
 
-PDcp::Bytes PDcp::makePacket(uint8_t sn, const Bytes& payload){
+PDcp::Bytes PDcp::makeControlPacket(uint8_t sn, const Bytes& payload){
+    PdcpHeader hdr;
+    hdr.sn = sn;
+    hdr.type = 1;
+    Bytes out;
+    out.reserve(2 + payload.size());
+    out.push_back(hdr.sn);
+    out.push_back(hdr.type);
+    Bytes copy = payload;
+    cipher(copy);
+    out.insert(out.end(), copy.begin(), copy.end());
+
+    // optional PCAP logging
+    if(pcapLogger_){
+        pcapLogger_->logRawPacket(out, name_);
+    }
+
+    return out;
+}
+
+PDcp::Bytes PDcp::makeDataPacket(uint8_t sn, const Bytes& payload) {
     PdcpHeader hdr;
     hdr.sn = sn;
     hdr.type = 0;
@@ -46,7 +66,7 @@ PDcp::Bytes PDcp::makePacket(uint8_t sn, const Bytes& payload){
     out.insert(out.end(), copy.begin(), copy.end());
 
     // optional PCAP logging
-    if(pcapLogger_){
+    if (pcapLogger_) {
         pcapLogger_->logRawPacket(out, name_);
     }
 
@@ -64,7 +84,7 @@ bool PDcp::parsePacket(const Bytes& raw, PdcpHeader& hdr, Bytes& payloadOut){
 
 PDcp::Bytes PDcp::encapsulate(const Bytes& payload){
     uint8_t sn = nextTxSn();
-    return makePacket(sn, payload);
+    return makeControlPacket(sn, payload);
 }
 
 std::optional<Bytes> PDcp::onReceive(const Bytes& raw){
@@ -90,7 +110,7 @@ std::optional<Bytes> PDcp::onReceive(const Bytes& raw){
             rxExpectSn_ = uint8_t((rxExpectSn_ + 1) & 0xFF);
             reorderBuffer_.erase(it);
         }
-
+        //I want it to return the type and out
         return out;
     }
     reorderBuffer_.emplace(hdr.sn, payload);

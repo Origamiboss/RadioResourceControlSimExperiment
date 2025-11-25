@@ -24,6 +24,7 @@ add_executable(Analyzer
     PcapLogger.cpp
     PDcp.cpp
     Utils.cpp
+    Attacker.cpp
 )
 
 # Include directories for headers

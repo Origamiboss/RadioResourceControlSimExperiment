@@ -46,7 +46,8 @@ private:
     uint8_t nextTxSn();
     uint8_t nextRxExpectSn();
 
-    Bytes makePacket(uint8_t sn, const Bytes& payload);
+    Bytes makeControlPacket(uint8_t sn, const Bytes& payload);
+    Bytes makeDataPacket(uint8_t sn, const Bytes& payload);
     bool parsePacket(const Bytes& raw, PdcpHeader& hdr, Bytes& payloadOut);
 
     // very small "reordering" buffer keyed by SN (for demo)
