@@ -23,8 +23,6 @@ public:
 
     ~UeRrc();
 
-    void NetworkRrc::run()
-
     void sendRrcConnectionRequest();
 
     void receiveRrcConnectionSetup();

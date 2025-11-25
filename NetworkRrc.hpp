@@ -13,7 +13,6 @@ public:
     NetworkRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer);
     ~NetworkRrc();
 
-    void NetworkRrc::run();
     void receiveRrcConnectionRequest();
     void sendRrcConnectionSetup();
     void receiveRrcConnectionComplete();

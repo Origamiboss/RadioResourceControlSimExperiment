@@ -27,16 +27,19 @@ int main() {
 
 
     std::cout << "=== LTE RRC Simulator ===\n";
-
+    
+    
     // UE initiates connection
     std::thread ueThread([&]() {
         ue.sendRrcConnectionRequest();
-        ue.run();
+        std::this_thread::sleep_for(std::chrono::seconds(2));
+        ue.checkForPackets();
     });
 
     // Network handles request
     std::thread networkThread([&]() {
-        network.run();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        network.checkForPackets();
     });
 
     ueThread.join();

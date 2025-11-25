@@ -4,7 +4,7 @@
 #include "PDcp.hpp"
 #include "PcapLogger.hpp"
 #include "Utils.hpp"
-
+#include <thread>
 
 NetworkRrc::NetworkRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer) : pcapLogger("network.pcap") {  // Provide a filename here
     this->myBuffer = myBuffer;
@@ -28,13 +28,6 @@ NetworkRrc::NetworkRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer) : pcap
 
 NetworkRrc::~NetworkRrc() {
     logFile.close();
-}
-
-void NetworkRrc::run() {
-    while (state != RrcState::RRC_IDLE) {
-        checkForPackets();
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
-    }
 }
 
 void NetworkRrc::receiveRrcConnectionRequest() {
@@ -90,12 +83,7 @@ void NetworkRrc::sendRrcRelease() {
 }
 
 void NetworkRrc::checkForPackets() {
-    if(myBuffer->empty()) {
-        std::cout << "BaseStation Buffer is empty. No packets to check.\n";
-        return;
-    }
-
-    auto optPacket = myBuffer->getPacket();
+    auto optPacket = myBuffer->waitForPacket();
     if (!optPacket) {
         std::cout << "No packet available in buffer.\n";
         return;

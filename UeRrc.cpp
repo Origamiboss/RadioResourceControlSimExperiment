@@ -8,7 +8,7 @@
 #include "PDcp.hpp"
 #include "PcapLogger.hpp"
 #include "Utils.hpp"
-
+#include <thread>
 
 UeRrc::UeRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer) {
     this->myBuffer = myBuffer;
@@ -32,13 +32,6 @@ UeRrc::UeRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer) {
 
 UeRrc::~UeRrc() {
     logFile.close();
-}
-
-void UeRrc::run() {
-    while (state != RrcState::RRC_IDLE) {
-        checkForPackets();
-        std::this_thread::sleep_for(std::chrono::milliseconds(20));
-    }
 }
 
 void UeRrc::sendRrcConnectionRequest() {
@@ -90,12 +83,8 @@ void UeRrc::receiveRrcRelease() {
 }
 
 void UeRrc::checkForPackets() {
-    if(myBuffer->empty()) {
-        std::cout << "UE Buffer is empty. No packets to check.\n";
-        return;
-    }
 
-    auto optPacket = myBuffer->getPacket();
+    auto optPacket = myBuffer->waitForPacket();
     if (!optPacket) {
         std::cout << "No packet available in buffer.\n";
         return;
