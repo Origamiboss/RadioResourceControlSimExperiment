@@ -1,16 +1,20 @@
 #pragma once
+#include <memory>
 #include "PacketBuffer.hpp"
 #include "PDcp.hpp"
 
 class Attacker {
 public:
-	Attacker();
-	//Exploit Utilities
-	pdcp::PDcp::Bytes createFuzzingPackets(int numOfBytes);
-	void attackTargetBuffer();
+    Attacker(PacketBuffer* targetBuffer, int sizeOfPackets);
+
+    pdcp::PDcp::Bytes createFuzzingPackets(int numOfBytes);
+    void attackTargetBuffer();
+
 private:
-	PacketBuffer* targetBuffer;
-	int sizeOfPackets;
-	std::unique_ptr<pdcp::PDcp> pdcp_;  // PDCP instance
+    PacketBuffer* targetBuffer_;      // <-- correct name
+    int sizeOfPackets_;               // <-- match .cpp usage
+    std::unique_ptr<pdcp::PDcp> pdcp_;
+    
+    void log(const std::string& msg); // <-- if this exists
 };
 
