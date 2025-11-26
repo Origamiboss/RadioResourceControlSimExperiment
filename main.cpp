@@ -14,45 +14,80 @@
 #include <thread>
 #include "UeRrc.hpp"
 #include "NetworkRrc.hpp"
+#include "CentralUnit.hpp"
+#include "DistributedUnit.hpp"
 #include "PacketBuffer.hpp"
 // #include <pcap.h>
 
 int main() {
 
-    PacketBuffer ueBuffer, networkBuffer;
-    UeRrc ue(&ueBuffer, &networkBuffer);  // Pass pointers instead of references
-    NetworkRrc network(&networkBuffer, &ueBuffer);
+    PacketBuffer ueBuffer, duBuffer, cuBuffer;
 
-    
+    UeRrc ue(&ueBuffer, &duBuffer);
+    DistributedUnit du(duBuffer, ueBuffer, cuBuffer);
+    CentralUnit cu(cuBuffer, duBuffer);
 
+    std::atomic<bool> running = true;
 
     std::cout << "=== LTE RRC Simulator ===\n";
-    
-    
-    // UE initiates connection
+
+    // ---------- UE Thread ----------
     std::thread ueThread([&]() {
+
         ue.sendRrcConnectionRequest();
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        ue.checkForPackets();
+        std::cout << "[UE] Sent RRC Request\n";
+
+        bool sentComplete = false;
+
+        while (running) {
+            ue.checkForPackets();
+
+            // After receiving the setup message
+            if (ue.getState() == RrcState::RRC_CONNECTED && !sentComplete) {
+                ue.sendRrcConnectionComplete();
+                std::cout << "[UE] Sent RRC Complete\n";
+                sentComplete = true;
+            }
+
+            // After receiving the release message
+            if (ue.getState() == RrcState::RRC_IDLE && sentComplete) {
+                std::cout << "[UE] Release received, ending\n";
+                running = false;
+            }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
     });
 
-    // Network handles request
-    std::thread networkThread([&]() {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        network.checkForPackets();
+
+    // ---------- DU Thread ----------
+    std::thread duThread([&]() {
+        while (running) {
+            du.checkForPackets();
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        }
     });
 
+    // ---------- CU Thread ----------
+    std::thread cuThread([&]() {
+
+        while (running) {
+
+            cu.checkForPackets();
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        }
+    });
     ueThread.join();
-    networkThread.join();
+    duThread.join();
+    cuThread.join();
 
     // UE processes setup
     std::this_thread::sleep_for(std::chrono::seconds(3));
 
-    // UE sends completion, network receives
-    ue.sendRrcConnectionComplete();
+    
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    network.sendRrcRelease();
 
     std::cout << "\nSimulation complete. Check Logs/ for details.\n";
     return 0;

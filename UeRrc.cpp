@@ -84,34 +84,23 @@ void UeRrc::receiveRrcRelease() {
 
 void UeRrc::checkForPackets() {
 
-    auto optPacket = myBuffer->waitForPacket();
-    if (!optPacket) {
-        std::cout << "No packet available in buffer.\n";
-        return;
-    }
+    auto optPacket = myBuffer->waitForPacket(); // this BLOCKS until packet arrives
+    if (!optPacket) return;
 
-    auto payload = pdcp_->onReceive(*optPacket);  // Assuming payload is a valid packet
+    auto payload = pdcp_->onReceive(*optPacket);
+    if (!payload) return;
 
-    if (!payload) {
-        std::cout << "No payload received from PDCP.\n";
-        return;
-    }
+    auto &data = *payload;
 
-    std::cout << "Payload received: ";
-    for (auto byte : *payload) {
-        std::cout << std::hex << static_cast<int>(byte) << " ";
-    }
-    std::cout << std::dec << "\n";  // reset to decimal for other outputs
-
-    // Process payload here
-    auto data = *payload;
-
-    if (data == Bytes{0x5F, 0x21}) {
-        receiveRrcRelease();
-    } else if (data == Bytes{0x50, 0xAA}) {
+    if (data == Bytes{0x50, 0xAA}) {
         receiveRrcConnectionSetup();
+        sendRrcConnectionComplete();
+    }
+    else if (data == Bytes{0x5F, 0x21}) {
+        receiveRrcRelease();
     }
 }
+
 
 
 void UeRrc::log(const std::string& msg) {
