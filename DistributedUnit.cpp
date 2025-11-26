@@ -3,7 +3,7 @@
 #include "PDcp.hpp"
 #include "Utils.hpp"
 
-void DistributedUnit::DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* d1cBuffer, PacketBuffer* f1uBuffer) {
+DistributedUnit::DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* d1cBuffer, PacketBuffer* f1uBuffer) {
     this->f1cBuffer = f1cBuffer;
     this->f1uBuffer = f1uBuffer;
     this->d1cBuffer = d1cBuffer;
