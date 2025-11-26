@@ -25,6 +25,8 @@ add_executable(Analyzer
     PDcp.cpp
     Utils.cpp
     Attacker.cpp
+    CentralUnit.cpp
+    DistributedUnit.cpp
 )
 
 # Include directories for headers
