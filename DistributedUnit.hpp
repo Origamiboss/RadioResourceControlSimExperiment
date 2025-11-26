@@ -14,12 +14,13 @@ private:
     PcapLogger pcapLogger{"../Logs/ue_rrc.pcap"};
 
     //Packet Queue
-    PacketBuffer f1cBuffer; // RRC + control
+    PacketBuffer d1cBuffer; // My Buffer
+    PacketBuffer f1cBuffer; // Control plane
     PacketBuffer f1uBuffer; // Data plane (if you add PDCP later)
     PacketBuffer* theirBuffer;
 
 public:
-    DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer);
+    DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* d1cBuffer, PacketBuffer* f1uBuffer);
 
     void checkForUePackets();
 

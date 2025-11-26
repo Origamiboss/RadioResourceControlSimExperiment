@@ -3,9 +3,10 @@
 #include "PDcp.hpp"
 #include "Utils.hpp"
 
-void DistributedUnit::DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer) {
+void DistributedUnit::DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* d1cBuffer, PacketBuffer* f1uBuffer) {
     this->f1cBuffer = f1cBuffer;
     this->f1uBuffer = f1uBuffer;
+    this->d1cBuffer = d1cBuffer;
     
     pdcp_ = std::make_unique<pdcp::PDcp>("DU-PDCP");
     // Use DU's own pcapLogger
