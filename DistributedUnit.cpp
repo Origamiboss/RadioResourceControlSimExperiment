@@ -43,7 +43,10 @@ void DistributedUnit::checkForCuPackets() {
     std::cout << "[DU] CU packet received\n";
 
     auto processed = processDownlink(*optPacket);
-    if (processed.empty()) return;
+    if (processed.empty()){ 
+        std::cout << "[DU] Processed CU packet is empty, not forwarding\n";    
+        return;
+    }
     std::cout << "[DU] Forwarding CU packet to UE\n";
     f2uBuffer->sendPacket(processed);
 
