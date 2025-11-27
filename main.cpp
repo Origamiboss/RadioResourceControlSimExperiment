@@ -42,6 +42,7 @@ int main() {
         ue.checkForPackets();
         bool sentComplete = false;
         while(!sentComplete){
+            ue.checkForPackets();
             // After receiving the setup message
             if (ue.getState() == RrcState::RRC_CONNECTED) {
                 ue.sendRrcConnectionComplete();
@@ -50,7 +51,7 @@ int main() {
             }else{
                 ue.sendRrcConnectionRequest();
                 std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                ue.checkForPackets();
+                
             }
 
         }
