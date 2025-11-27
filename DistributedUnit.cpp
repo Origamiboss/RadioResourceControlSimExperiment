@@ -3,7 +3,7 @@
 #include "PDcp.hpp"
 #include "Utils.hpp"
 
-DistributedUnit::DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer) {
+DistributedUnit::DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* f2cBuffer, PacketBuffer* f1uBuffer, PacketBuffer* f2uBuffer) {
     this->f1cBuffer = f1cBuffer;
     this->f1uBuffer = f1uBuffer;
     
@@ -33,7 +33,7 @@ void DistributedUnit::checkForUePackets() {
         auto pdcpPacket = pdcp_->encapsulate(data);
 
         std::cout << "[DU] Forwarding UE packet to CU\n";
-        f1cBuffer->sendPacket(pdcpPacket);   // send to CU
+        f2uBuffer->sendPacket(pdcpPacket);   // send to CU
     }
 }
 void DistributedUnit::checkForCuPackets() {
@@ -52,6 +52,6 @@ void DistributedUnit::checkForCuPackets() {
         auto pdcpPacket = pdcp_->encapsulate(data);
 
         std::cout << "[DU] Forwarding CU packet to UE\n";
-        f1uBuffer->sendPacket(pdcpPacket);   // back to UE
+        f2cBuffer->sendPacket(pdcpPacket);   // back to UE
     }
 }
