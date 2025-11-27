@@ -25,7 +25,7 @@ int main() {
 
     UeRrc ue(&du_to_ue, &ue_to_du);
 
-    const int optionType = 0;
+    const int optionType = 2;
 
     DistributedUnit du(&ue_to_du, &cu_to_du, &du_to_cu, &du_to_ue, optionType);
     CentralUnit cu(&cu_to_du, &du_to_cu, optionType);
