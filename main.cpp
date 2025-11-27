@@ -21,11 +21,11 @@
 
 int main() {
 
-    PacketBuffer ueBuffer, du_cuBuffer, du_ueBuffer, cuBuffer;
+    PacketBuffer ue_to_du, du_to_ue, du_to_cu, cu_to_du;
 
-    UeRrc ue(&ueBuffer, &du_cuBuffer);
-    DistributedUnit du(&du_ueBuffer, &ueBuffer, &du_cuBuffer, &cuBuffer);
-    CentralUnit cu(&cuBuffer, &du_ueBuffer);
+    UeRrc ue(&du_to_ue, &ue_to_du);
+    DistributedUnit du(&ue_to_du, &du_to_cu, &du_to_ue, &cu_to_du);
+    CentralUnit cu(&du_to_cu, &cu_to_du);
 
     std::atomic<bool> running = true;
 
