@@ -15,8 +15,8 @@ private:
     PcapLogger pcapLogger{"../Logs/ue_rrc.pcap"};
 
     //Packet Queue
-    PacketBuffer f1cBuffer; // To NetworkRrc
-    PacketBuffer f1uBuffer; // To UE
+    PacketBuffer* f1cBuffer; // To NetworkRrc
+    PacketBuffer* f1uBuffer; // To UE
     PacketBuffer* theirBuffer;
 
 public:

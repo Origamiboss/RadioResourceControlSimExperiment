@@ -14,9 +14,9 @@ private:
     PcapLogger pcapLogger{"../Logs/ue_rrc.pcap"};
 
     //Packet Queue
-    PacketBuffer d1cBuffer; // My Buffer
-    PacketBuffer f1cBuffer; // Control plane
-    PacketBuffer f1uBuffer; // Data plane (if you add PDCP later)
+    PacketBuffer* d1cBuffer; // My Buffer
+    PacketBuffer* f1cBuffer; // Control plane
+    PacketBuffer* f1uBuffer; // Data plane (if you add PDCP later)
     PacketBuffer* theirBuffer;
 
 public:

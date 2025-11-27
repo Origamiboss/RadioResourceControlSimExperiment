@@ -18,7 +18,9 @@ enum class RrcState {
     RRC_RELEASE_RECEIVED,
 
     // Final state after release processing
-    RRC_RELEASED
+    RRC_RELEASED,
+
+    RRC_SETUP_SENT // CU has sent RRCConnectionSetup
 };
 
 #endif 
