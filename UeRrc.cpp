@@ -69,7 +69,7 @@ void UeRrc::sendRrcConnectionComplete() {
 
         logFile << "[" << getCurrentTimestamp() << "] [UE → Network] sent RRCConnectionComplete\n";
         std::cout << "Sent RRCConnectionComplete\n";
-
+        state = RrcState::RRC_IDLE;
         theirBuffer->sendPacket(pdcpPacket);
     }
 }
