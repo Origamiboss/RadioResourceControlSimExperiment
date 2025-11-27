@@ -59,6 +59,7 @@ void CentralUnit::sendRrcSetup() {
 }
 
 void CentralUnit::sendRrcRelease() {
+    std::cout << "[CU] Attempting to send RRC Release\n";
     if (state == RrcState::RRC_CONNECTED) {
 
         pdcp::PDcp::Bytes payload = {0x5F, 0x21};
@@ -108,8 +109,9 @@ void CentralUnit::sendDummyData() {
 void CentralUnit::receiveRrcConnectionComplete() {
     
     std::cout << "CentralUnit received RRCConnectionComplete\n";
-    sendRrcRelease();
     state = RrcState::RRC_CONNECTED;
+    sendRrcRelease();
+
 }
 void CentralUnit::receiveRrcConnectionRequest() {
     std::cout << "[CU] Received RRC Request\n";
