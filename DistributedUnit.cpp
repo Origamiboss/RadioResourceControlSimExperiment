@@ -61,7 +61,7 @@ void DistributedUnit::checkForUePackets() {
     auto processed = proccessUpLink(*optPacket);
     if (processed.empty()) return;
     std::cout << "[DU] Forwarding UE packet to CU\n";
-    f2uBcffer->sendPacket(processed);
+    f2cBuffer->sendPacket(processed);
 
     
 }
