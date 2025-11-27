@@ -27,14 +27,10 @@ void DistributedUnit::checkForCuPackets() {
     std::cout << "[DU] CU packet received\n";
     auto payload = pdcp_->onReceive(*optPacket);
     if (!payload) return;
-    std::cout << "[DU] Decapsulated CU packet\n";
 
     auto pdcpPacket = pdcp_->encapsulate(*payload);
-    std::cout << "[DU] Encapsulated CU packet\n";
     std::cout << "[DU] Forwarding CU packet to UE\n";
     f2uBuffer->sendPacket(pdcpPacket);   // send to CU
-        
-    
 }
 void DistributedUnit::checkForUePackets() {
     std::cout << "[DU] Waiting for UE packets...\n";
