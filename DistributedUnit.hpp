@@ -19,7 +19,7 @@ private:
     PacketBuffer* theirBuffer;
 
 public:
-    DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* d1cBuffer, PacketBuffer* f1uBuffer);
+    DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer);
 
     void checkForPackets();
 
