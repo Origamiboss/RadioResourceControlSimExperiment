@@ -36,7 +36,7 @@ UeRrc::~UeRrc() {
 
 void UeRrc::sendRrcConnectionRequest() {
     if (state == RrcState::RRC_IDLE) {
-        state = RrcState::RRC_CONNECTING;
+        state = RrcState::RRC_REQUEST_SENT;
 
         pdcp::PDcp::Bytes payload = {0x40, 0x12};
         auto pdcpPacket = pdcp_->encapsulate(payload);
@@ -51,7 +51,7 @@ void UeRrc::sendRrcConnectionRequest() {
 }
 
 void UeRrc::receiveRrcConnectionSetup() {
-    if (state == RrcState::RRC_CONNECTING) {
+    if (state == RrcState::RRC_REQUEST_SENT) {
         state = RrcState::RRC_CONNECTED;
 
         logFile << "[" << getCurrentTimestamp() << "] [Network → UE] Received RRCConnectionSetup\n";

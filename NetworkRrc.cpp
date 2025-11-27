@@ -32,7 +32,7 @@ NetworkRrc::~NetworkRrc() {
 
 void NetworkRrc::receiveRrcConnectionRequest() {
     if (state == RrcState::RRC_IDLE) {
-        state = RrcState::RRC_CONNECTING;
+        state = RrcState::RRC_REQUEST_SENT;
 
         logFile << "[" << getCurrentTimestamp() << "] [UE → Network] Received RRCConnectionRequest\n";
         std::cout << "Network received RRCConnectionRequest\n";
@@ -41,7 +41,7 @@ void NetworkRrc::receiveRrcConnectionRequest() {
 }
 
 void NetworkRrc::sendRrcConnectionSetup() {
-    if (state == RrcState::RRC_CONNECTING) {
+    if (state == RrcState::RRC_REQUEST_SENT) {
 
         pdcp::PDcp::Bytes payload = {0x50, 0xAA};
         auto pdcpPacket = pdcp_->encapsulate(payload);
