@@ -40,6 +40,7 @@ public:
 
     void checkForCuPackets();
 
+    void changeOptionType(int newType);
     
     [[maybe_unused]] RrcState getState() const;
 };
