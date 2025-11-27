@@ -21,10 +21,10 @@ void DistributedUnit::checkForUePackets() {
     std::cout << "[DU] Waiting for UE packets...\n";
     auto optPacket = f1uBuffer->waitForPacket(); // this BLOCKS until packet arrives
     std::cout << "[DU] UE packet received\n";
-    if (!optPacket) continue;
+    if (!optPacket) return;
 
     auto payload = pdcp_->onReceive(*optPacket);
-    if (!payload) continue;
+    if (!payload) return;
 
 
     auto pdcpPacket = pdcp_->encapsulate(*payload);
@@ -37,10 +37,10 @@ void DistributedUnit::checkForCuPackets() {
     std::cout << "[DU] Waiting for CU packets...\n";
     auto optPacket = f1cBuffer->waitForPacket(); // this BLOCKS until packet arrives
     std::cout << "[DU] CU packet received\n";
-    if (!optPacket) continue;
+    if (!optPacket) return;
 
     auto payload = pdcp_->onReceive(*optPacket);
-    if (!payload) continue;
+    if (!payload) return;
 
 
     auto pdcpPacket = pdcp_->encapsulate(*payload);

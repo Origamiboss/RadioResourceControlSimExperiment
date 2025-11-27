@@ -17,10 +17,10 @@ void CentralUnit::checkForPackets() {
     std::cout << "[CU] Waiting for packets...\n";
     auto optPacket = f1cBuffer->waitForPacket(); // this BLOCKS until packet arrives
     std::cout << "[CU] Packet received\n";
-    if (!optPacket) continue;
+    if (!optPacket) return;
 
     auto payload = pdcp_->onReceive(*optPacket);
-    if (!payload) continue;
+    if (!payload) return;
 
     auto msg = *payload;
 
