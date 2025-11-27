@@ -35,6 +35,7 @@ void DistributedUnit::checkForUePackets() {
     }
 }
 void DistributedUnit::checkForCuPackets() {
+    throw std::runtime_error("Not implemented yet");
     if (!f1cBuffer->empty()) {
         std::cout << "[DU] Waiting for CU packets...\n";
         auto optPacket = f1cBuffer->getPacket(); // this BLOCKS until packet arrives
