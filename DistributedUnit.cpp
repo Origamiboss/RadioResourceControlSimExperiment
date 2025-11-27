@@ -52,19 +52,17 @@ void DistributedUnit::checkForCuPackets() {
 }
 void DistributedUnit::checkForUePackets() {
     if(f1cBuffer->empty()) return;
-    std::cout << "[DU] Waiting for UE packets...\n";
-    auto optPacket = f1cBuffer->getPacket(); // this BLOCKS until packet arrives
+    std::cout << "[DU] Waiting for CU packets...\n";
+    auto optPacket = f1uBuffer->getPacket(); // this BLOCKS until packet arrives
     
     if (!optPacket) return;
-    std::cout << "[DU] UE packet received\n";
-    auto payload = pdcp_->onReceive(*optPacket);
-    if (!payload) return;
+    std::cout << "[DU] CU packet received\n";
 
+    auto processed = proccessUpLink(*optPacket);
+    if (processed.empty()) return;
+    std::cout << "[DU] Forwarding CU packet to UE\n";
+    f2uBcffer->sendPacket(processed);
 
-    auto pdcpPacket = pdcp_->encapsulate(*payload);
-
-    std::cout << "[DU] Forwarding UE packet to CU\n";
-    f2cBuffer->sendPacket(pdcpPacket);   // back to UE
     
 }
 
