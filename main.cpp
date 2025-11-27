@@ -41,31 +41,42 @@ int main() {
         std::cout << "[UE] Sent RRC Request\n";
 
         bool sentComplete = false;
-
-        while (running) {
+        while(!sentComplete){
             ue.checkForPackets();
-            for(int i = 0; i < 1000; i++){
-                ue.sendDummyData();
-                std::this_thread::sleep_for(std::chrono::milliseconds(20));
-                ue.checkForPackets();
-            }
-            ue.checkForPackets();
-
             // After receiving the setup message
-            if (ue.getState() == RrcState::RRC_CONNECTED && !sentComplete) {
+            if (ue.getState() == RrcState::RRC_CONNECTED) {
                 ue.sendRrcConnectionComplete();
                 std::cout << "[UE] Sent RRC Complete\n";
                 sentComplete = true;
+            }else{
+                ue.sendRrcConnectionRequest();
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
             }
 
-            // After receiving the release message
-            if (ue.getState() == RrcState::RRC_IDLE && sentComplete) {
-                std::cout << "[UE] Release received, ending\n";
-                running = false;
-            }
-
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
+        for(int i = 0; i < 1000; i++){
+            ue.sendDummyData();
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+            ue.checkForPackets();
+        }
+        
+
+        // After receiving the setup message
+        if (ue.getState() == RrcState::RRC_CONNECTED) {
+            ue.sendRrcConnectionComplete();
+            std::cout << "[UE] Sent RRC Complete\n";
+        }
+        while(RrcState::RRC_IDLE != ue.getState()){
+            ue.checkForPackets();
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            ue.sendRrcConnectionComplete();
+        }
+        // After receiving the release message
+        if (ue.getState() == RrcState::RRC_IDLE) {
+            std::cout << "[UE] Release received, ending\n";
+            running = false;
+        }
+
     });
 
 
