@@ -98,10 +98,10 @@ void UeRrc::sendDummyData() {
 }
 
 void UeRrc::receiveRrcRelease() {
+    std::cout << "[UE] Received RRC Release\n";
     if (state == RrcState::RRC_CONNECTED) {
         state = RrcState::RRC_IDLE;
         logFile << "[" << getCurrentTimestamp() << "] [Network → UE] RRC Release received, back to IDLE\n";
-        std::cout << "Received RRCRelease\n";
     }
 }
 
