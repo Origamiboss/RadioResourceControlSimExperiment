@@ -20,15 +20,31 @@ void DistributedUnit::checkForPackets() {
 void DistributedUnit::checkForUePackets() {
     while (f1uBuffer->empty()) {
         pdcp::PDcp::Bytes p = f1uBuffer->getPacket();
-        
+        auto decap = pdcp_->onReceive(p.value());
+        if (!decap) continue;
+
+        auto msg = *decap;
+
+
+        auto pdcpPacket = pdcp_->encapsulate(msg);
+
         std::cout << "[DU] Forwarding UE packet to CU\n";
-        f1cBuffer->sendPacket(p);   // send to CU
+        f1cBuffer->sendPacket(pdcpPacket);   // send to CU
     }
 }
 void DistributedUnit::checkForCuPackets() {
     while (f1cBuffer->empty()) {
         pdcp::PDcp::Bytes p = f1cBuffer->getPacket();
+
+        auto decap = pdcp_->onReceive(p.value());
+        if (!decap) continue;
+
+        auto msg = *decap;
+
+
+        auto pdcpPacket = pdcp_->encapsulate(msg);
+
         std::cout << "[DU] Forwarding CU packet to UE\n";
-        f1uBuffer->sendPacket(p);   // back to UE
+        f1uBuffer->sendPacket(pdcpPacket);   // back to UE
     }
 }
