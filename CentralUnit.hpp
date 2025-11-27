@@ -26,6 +26,13 @@ public:
 
     void sendRrcSetup();
 
+    void receiveRrcConnectionComplete();
+
+    void sendRrcRelease();
+
+    void sendRrcConnectionSetup();
+
+    void receiveRrcConnectionRequest();
     
     [[maybe_unused]] RrcState getState() const;
 };
