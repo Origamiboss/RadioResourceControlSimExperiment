@@ -14,23 +14,24 @@ CentralUnit::CentralUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer) {
 
 
 void CentralUnit::checkForPackets() {
-    std::cout << "[CU] Waiting for packets...\n";
-    auto optPacket = f1cBuffer->waitForPacket(); // this BLOCKS until packet arrives
-    std::cout << "[CU] Packet received\n";
-    if (!optPacket) return;
+    if(!f1cBuffer->empty()){}
+        std::cout << "[CU] Waiting for packets...\n";
+        auto optPacket = f1cBuffer->getPacket(); // this BLOCKS until packet arrives
+        std::cout << "[CU] Packet received\n";
+        if (!optPacket) return;
 
-    auto payload = pdcp_->onReceive(*optPacket);
-    if (!payload) return;
+        auto payload = pdcp_->onReceive(*optPacket);
+        if (!payload) return;
 
-    auto msg = *payload;
+        auto msg = *payload;
 
-    if (msg == pdcp::PDcp::Bytes{0x40, 0x12}) {
-        receiveRrcConnectionRequest();
+        if (msg == pdcp::PDcp::Bytes{0x40, 0x12}) {
+            receiveRrcConnectionRequest();
+        }
+        else if (msg == pdcp::PDcp::Bytes{0x43, 0x34}) {
+            receiveRrcConnectionComplete();
+        }
     }
-    else if (msg == pdcp::PDcp::Bytes{0x43, 0x34}) {
-        receiveRrcConnectionComplete();
-    }
-    
 }
 void CentralUnit::sendRrcSetup() {
     pdcp::PDcp::Bytes payload = {0x50, 0xAA};  // RRC Setup
