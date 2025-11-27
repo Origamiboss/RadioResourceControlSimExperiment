@@ -40,6 +40,8 @@ public:
 
     void sendRrcConnectionSetup();
 
+    void sendDummyData();
+
     void receiveRrcConnectionRequest();
     
     [[maybe_unused]] RrcState getState() const;
