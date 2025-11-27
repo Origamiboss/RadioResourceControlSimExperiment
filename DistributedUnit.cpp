@@ -18,40 +18,34 @@ void DistributedUnit::checkForPackets() {
 }
 
 void DistributedUnit::checkForUePackets() {
-    while (!f1uBuffer->empty()) {
-        std::cout << "[DU] Waiting for UE packets...\n";
-        auto optPacket = f1uBuffer->waitForPacket(); // this BLOCKS until packet arrives
-        std::cout << "[DU] UE packet received\n";
-        if (!optPacket) continue;
+    std::cout << "[DU] Waiting for UE packets...\n";
+    auto optPacket = f1uBuffer->waitForPacket(); // this BLOCKS until packet arrives
+    std::cout << "[DU] UE packet received\n";
+    if (!optPacket) continue;
 
-        auto payload = pdcp_->onReceive(*optPacket);
-        if (!payload) continue;
-
-        auto &data = *payload;
+    auto payload = pdcp_->onReceive(*optPacket);
+    if (!payload) continue;
 
 
-        auto pdcpPacket = pdcp_->encapsulate(data);
+    auto pdcpPacket = pdcp_->encapsulate(*payload);
 
-        std::cout << "[DU] Forwarding UE packet to CU\n";
-        f2uBuffer->sendPacket(pdcpPacket);   // send to CU
-    }
+    std::cout << "[DU] Forwarding UE packet to CU\n";
+    f2uBuffer->sendPacket(pdcpPacket);   // send to CU
+    
 }
 void DistributedUnit::checkForCuPackets() {
-    while (!f1cBuffer->empty()) {
-        std::cout << "[DU] Waiting for CU packets...\n";
-        auto optPacket = f1cBuffer->waitForPacket(); // this BLOCKS until packet arrives
-        std::cout << "[DU] CU packet received\n";
-        if (!optPacket) continue;
+    std::cout << "[DU] Waiting for CU packets...\n";
+    auto optPacket = f1cBuffer->waitForPacket(); // this BLOCKS until packet arrives
+    std::cout << "[DU] CU packet received\n";
+    if (!optPacket) continue;
 
-        auto payload = pdcp_->onReceive(*optPacket);
-        if (!payload) continue;
-
-        auto &data = *payload;
+    auto payload = pdcp_->onReceive(*optPacket);
+    if (!payload) continue;
 
 
-        auto pdcpPacket = pdcp_->encapsulate(data);
+    auto pdcpPacket = pdcp_->encapsulate(*payload);
 
-        std::cout << "[DU] Forwarding CU packet to UE\n";
-        f2cBuffer->sendPacket(pdcpPacket);   // back to UE
-    }
+    std::cout << "[DU] Forwarding CU packet to UE\n";
+    f2cBuffer->sendPacket(pdcpPacket);   // back to UE
+    
 }
