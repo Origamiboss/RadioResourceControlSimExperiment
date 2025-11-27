@@ -89,10 +89,8 @@ void SimulationType(int optionType){
         }
         for(int i = 0; i < 1000; i++){
             ue.sendDummyData();
-            std::this_thread::sleep_for(std::chrono::milliseconds(20));
-            ue.checkForPackets();
         }
-        
+        ue.checkForPackets();
 
         // After receiving the setup message
         if (ue.getState() == RrcState::RRC_CONNECTED) {
@@ -109,7 +107,6 @@ void SimulationType(int optionType){
                 break;
             }
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
         
         // After receiving the release message
@@ -125,7 +122,6 @@ void SimulationType(int optionType){
     std::thread duThread([&]() {
         while (running) {
             du.checkForPackets();
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     });
 
@@ -136,7 +132,6 @@ void SimulationType(int optionType){
 
             cu.checkForPackets();
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(5));
         }
     });
     ueThread.join();
@@ -144,11 +139,6 @@ void SimulationType(int optionType){
     cuThread.join();
 
     // UE processes setup
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-
-    
-
-    std::this_thread::sleep_for(std::chrono::seconds(1));
 
     std::cout << "\n Option Type "<< optionType << " Simulation complete. Check Logs/ for details.\n";
 }
