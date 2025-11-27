@@ -48,10 +48,6 @@ int main() {
                 ue.sendRrcConnectionComplete();
                 std::cout << "[UE] Sent RRC Complete\n";
                 sentComplete = true;
-            }else{
-                ue.sendRrcConnectionRequest();
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                
             }
 
         }
