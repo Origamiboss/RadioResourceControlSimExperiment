@@ -21,7 +21,7 @@ void PcapLogger::logPacket(const std::vector<uint8_t>& packet, const std::string
     header.caplen = static_cast<bpf_u_int32>(packet.size());
     header.len = static_cast<bpf_u_int32>(packet.size());
   
-    printPacketHex(packet);
+    //printPacketHex(packet);
   
     pcap_dump((u_char*)pcap_dumper, &header, packet.data());
 }
@@ -33,7 +33,7 @@ void PcapLogger::logRawPacket(const std::vector<uint8_t>& packet, const std::str
     header.caplen = static_cast<bpf_u_int32>(packet.size());
     header.len = static_cast<bpf_u_int32>(packet.size());
     
-    printPacketHex(packet);
+    //printPacketHex(packet);
     
     pcap_dump((u_char*)pcap_dumper, &header, packet.data());
 }
