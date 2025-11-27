@@ -19,14 +19,16 @@ void DistributedUnit::checkForPackets() {
 
 void DistributedUnit::checkForUePackets() {
     while (f1uBuffer->empty()) {
-        auto p = f1uBuffer->getPacket();
-        auto decap = pdcp_->onReceive(*p);
-        if (!decap) continue;
+        auto optPacket = myBuffer->getPacket(); // this BLOCKS until packet arrives
+        if (!optPacket) continue;
 
-        auto msg = *decap;
+        auto payload = pdcp_->onReceive(*optPacket);
+        if (!payload) continue;
+
+        auto &data = *payload;
 
 
-        auto pdcpPacket = pdcp_->encapsulate(msg);
+        auto pdcpPacket = pdcp_->encapsulate(data);
 
         std::cout << "[DU] Forwarding UE packet to CU\n";
         f1cBuffer->sendPacket(pdcpPacket);   // send to CU
@@ -34,15 +36,16 @@ void DistributedUnit::checkForUePackets() {
 }
 void DistributedUnit::checkForCuPackets() {
     while (f1cBuffer->empty()) {
-        auto p = f1cBuffer->getPacket();
+        auto optPacket = myBuffer->getPacket(); // this BLOCKS until packet arrives
+        if (!optPacket) continue;
 
-        auto decap = pdcp_->onReceive(*p);
-        if (!decap) continue;
+        auto payload = pdcp_->onReceive(*optPacket);
+        if (!payload) continue;
 
-        auto msg = *decap;
+        auto &data = *payload;
 
 
-        auto pdcpPacket = pdcp_->encapsulate(msg);
+        auto pdcpPacket = pdcp_->encapsulate(data);
 
         std::cout << "[DU] Forwarding CU packet to UE\n";
         f1uBuffer->sendPacket(pdcpPacket);   // back to UE
