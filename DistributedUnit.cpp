@@ -54,8 +54,10 @@ void DistributedUnit::checkForUePackets() {
     if(f1cBuffer->empty()) return;
     std::cout << "[DU] Waiting for UE packets...\n";
     auto optPacket = f1uBuffer->getPacket(); // this BLOCKS until packet arrives
-    
-    if (!optPacket) return;
+    if (!optPacket){ 
+        std::cout << "[DU] No UE packet received\n";
+        return
+    };
     std::cout << "[DU] UE packet received\n";
 
     auto processed = proccessUpLink(*optPacket);
