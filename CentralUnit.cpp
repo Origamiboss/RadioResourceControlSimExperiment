@@ -3,22 +3,33 @@
 #include "PDcp.hpp"
 #include "Utils.hpp"
 
-CentralUnit::CentralUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer) {
+CentralUnit::CentralUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer, int optionType) {
     this->f1cBuffer = f1cBuffer;
     this->f1uBuffer = f1uBuffer;
     
+    this->optionType = optionType;
     pdcp_ = std::make_unique<pdcp::PDcp>("DU-PDCP");
     // Use DU's own pcapLogger
     pdcp_->setPcapLogger(&pcapLogger);
+
+    // Same latency model as DU
+    latency.fiberOneWayUs = 50;     // 50 us
+    latency.packetizationUs = 30;   // 0.03 ms
+    latency.jitterUs = 10;          // +/- 10 us
+    latency.fronthaulMbps = 10000;  // 10 Gbps link
 }
 
 
 void CentralUnit::checkForPackets() {
     if(!f1cBuffer->empty()){
         std::cout << "[CU] Waiting for packets...\n";
-        auto optPacket = f1cBuffer->getPacket(); // this BLOCKS until packet arrives
-        std::cout << "[CU] Packet received\n";
+        auto optPacket = f1cBuffer->getPacket();
         if (!optPacket) return;
+
+        std::cout << "[CU] Packet received\n";
+
+        // Apply realistic fronthaul + processing latency
+        applyLatency(optPacket->size());
 
         auto payload = pdcp_->onReceive(*optPacket);
         if (!payload) return;
@@ -30,12 +41,16 @@ void CentralUnit::checkForPackets() {
         }
         else if (msg == pdcp::PDcp::Bytes{0x43, 0x34}) {
             receiveRrcConnectionComplete();
+        }else if (state == RrcState::RRC_CONNECTED) {
+            sendDummyData();
         }
     }
 }
 void CentralUnit::sendRrcSetup() {
     pdcp::PDcp::Bytes payload = {0x50, 0xAA};  // RRC Setup
     auto pdcpPacket = pdcp_->encapsulate(payload);
+
+    applyLatency(pdcpPacket.size());
 
     std::cout << "[CU] Sending RRC Setup\n";
     f1uBuffer->sendPacket(pdcpPacket);
@@ -48,6 +63,8 @@ void CentralUnit::sendRrcRelease() {
 
         pdcp::PDcp::Bytes payload = {0x5F, 0x21};
         auto pdcpPacket = pdcp_->encapsulate(payload);
+
+        applyLatency(pdcpPacket.size());
 
         std::cout << "Sent RRCRelease From CU\n";
 
@@ -63,10 +80,29 @@ void CentralUnit::sendRrcConnectionSetup() {
 
     std::cout << "Sent RRCConnectionSetup From CU\n";
 
-    f1uBuffer->sendPacket(pdcpPacket);
+    f1uBuffer->sendPacket(pdcpPacket); 
+}
+void CentralUnit::sendDummyData() {
+    if (state == RrcState::RRC_CONNECTED) {
+        const size_t dataSize = 2000;  // 2 KB dummy packet
+        pdcp::PDcp::Bytes payload;
+        payload.resize(dataSize);
 
-    
-    
+        // Fill with random bytes
+        std::generate(payload.begin(), payload.end(), []() {
+            return static_cast<uint8_t>(rand() % 256);
+        });
+
+        auto pdcpPacket = pdcp_->encapsulate(payload);
+        pcapLogger.logPacket(pdcpPacket, "PDCP (Dummy Data)");
+
+        logFile << "[" << getCurrentTimestamp() 
+                << "] [Network -> UE] sent Dummy Data (" << dataSize << " bytes)\n";
+
+        std::cout << "Sent Dummy Data: " << dataSize << " bytes\n";
+        applyLatency(pdcpPacket.size());
+        f1uBuffer->sendPacket(pdcpPacket);
+    }
 }
 
 void CentralUnit::receiveRrcConnectionComplete() {
@@ -79,3 +115,49 @@ void CentralUnit::receiveRrcConnectionRequest() {
     sendRrcConnectionSetup();
     state = RrcState::RRC_SETUP_SENT;
 }
+
+int CentralUnit::computeFronthaulDelayUs(size_t sizeBytes)
+{
+    double bits = sizeBytes * 8.0;
+
+    double serialization = (bits / (latency.fronthaulMbps * 1'000'000.0)) 
+                           * 1'000'000.0; // microseconds
+
+    int jitter = (rand() % (latency.jitterUs * 2)) - latency.jitterUs;
+
+    return latency.fiberOneWayUs + latency.packetizationUs +
+           (int)serialization + jitter;
+}
+
+int CentralUnit::computeProcessingDelayUs()
+{
+    switch (optionType) {
+        case 2: return 200;  // PDCP only
+        case 6: return 500;  // RLC processing
+        case 7: return 800;  // PHY heavy processing
+        default: return 300;
+    }
+}
+
+int CentralUnit::computeUuDelayUs()
+{
+    switch (optionType) {
+        case 2: return 300;
+        case 6: return 150;
+        case 7: return 60;
+        default: return 200;
+    }
+}
+
+void CentralUnit::applyLatency(int sizeBytes)
+{
+    int fronthaul = computeFronthaulDelayUs(sizeBytes);
+    int proc      = computeProcessingDelayUs();
+    int uu        = computeUuDelayUs();
+
+    int total = fronthaul + proc + uu;
+
+    std::this_thread::sleep_for(std::chrono::microseconds(total));
+}
+
+

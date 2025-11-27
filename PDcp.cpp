@@ -118,6 +118,10 @@ std::optional<Bytes> PDcp::onReceive(const Bytes& raw){
     // optional pcap log for received packet already handled in parsePacket if needed
 }
 
+std::optional<Bytes> PDcp::getPacketForForward(const Bytes& raw){
+    return raw;
+}
+
 std::string PDcp::status() const {
     std::ostringstream ss;
     std::lock_guard<std::mutex> lk(mtx_);

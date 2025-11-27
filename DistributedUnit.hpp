@@ -6,6 +6,7 @@
 #include "PDcp.hpp"
 #include "RrcState.hpp"
 #include "PacketBuffer.hpp"
+#include "LatencyModel.hpp"
 
 class DistributedUnit {
 private:
@@ -20,8 +21,18 @@ private:
     PacketBuffer* f2uBuffer; // Data plane Output (if you add PDCP later)
     PacketBuffer* theirBuffer;
 
+    int optionType;
+    LatencyModel latency;
+
+    //private functions
+    PDcp::Bytes processDownlink(pdcp::PDcp::Bytes& raw);
+    PDcp::Bytes proccessUpLink(pdcp::PDcp::Bytes& raw);
+    int computeFronthaulDelayUs(size_t packetSizeBytes);
+    int computeUuDelayUs();
+    int computeProcessingDelayUs();
+
 public:
-    DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* f2cBuffer, PacketBuffer* f1uBuffer, PacketBuffer* f2uBuffer);
+    DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* f2cBuffer, PacketBuffer* f1uBuffer, PacketBuffer* f2uBuffer, int optionType);
 
     void checkForPackets();
 

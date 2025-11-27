@@ -74,6 +74,29 @@ void UeRrc::sendRrcConnectionComplete() {
     }
 }
 
+void UeRrc::sendDummyData() {
+    if (state == RrcState::RRC_CONNECTED) {
+        const size_t dataSize = 2000;  // 2 KB dummy packet
+        pdcp::PDcp::Bytes payload;
+        payload.resize(dataSize);
+
+        // Fill with random bytes
+        std::generate(payload.begin(), payload.end(), []() {
+            return static_cast<uint8_t>(rand() % 256);
+        });
+
+        auto pdcpPacket = pdcp_->encapsulate(payload);
+        pcapLogger.logPacket(pdcpPacket, "PDCP (Dummy Data)");
+
+        logFile << "[" << getCurrentTimestamp() 
+                << "] [UE → Network] sent Dummy Data (" << dataSize << " bytes)\n";
+
+        std::cout << "Sent Dummy Data: " << dataSize << " bytes\n";
+
+        theirBuffer->sendPacket(pdcpPacket);
+    }
+}
+
 void UeRrc::receiveRrcRelease() {
     if (state == RrcState::RRC_CONNECTED) {
         state = RrcState::RRC_IDLE;
@@ -85,7 +108,7 @@ void UeRrc::receiveRrcRelease() {
 void UeRrc::checkForPackets() {
     if(myBuffer->empty()) return;
     std::cout << "[UE] Waiting for packets...\n";
-    auto optPacket = myBuffer->getPacket(); // this BLOCKS until packet arrives
+    auto optPacket = myBuffer->getPacket();
     std::cout << "[UE] Got a packet\n";
     if (!optPacket) return;
 

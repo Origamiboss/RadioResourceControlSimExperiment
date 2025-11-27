@@ -39,6 +39,8 @@ public:
     // call this when PDCP receives a raw packet from lower layers
     std::optional<Bytes> onReceive(const Bytes& raw);
 
+    std::optional<Bytes> getPacketForForward(const Bytes& raw)
+
     // debugging
     std::string status() const;
 

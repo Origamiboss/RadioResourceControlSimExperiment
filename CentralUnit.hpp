@@ -19,8 +19,15 @@ private:
     PacketBuffer* f1uBuffer; // To UE
     PacketBuffer* theirBuffer;
 
+    int optionType;
+
+    
+    int computeFronthaulDelayUs(size_t sizeBytes);
+    int computeProcessingDelayUs();
+    int computeUuDelayUs();
+    void applyLatency(int sizeBytes);
 public:
-    CentralUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer);
+    CentralUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer, int optionType);
 
     void checkForPackets();
 

@@ -41,6 +41,12 @@ int main() {
 
         while (running) {
             ue.checkForPackets();
+            for(int i = 0; i < 1000; i++){
+                ue.sendDummyData();
+                std::this_thread::sleep_for(std::chrono::milliseconds(20));
+                ue.checkForPackets();
+            }
+            ue.checkForPackets();
 
             // After receiving the setup message
             if (ue.getState() == RrcState::RRC_CONNECTED && !sentComplete) {

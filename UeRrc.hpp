@@ -29,6 +29,8 @@ public:
 
     void sendRrcConnectionComplete();
 
+    void sendDummyData();
+
     void receiveRrcRelease();
 
     void checkForPackets();
