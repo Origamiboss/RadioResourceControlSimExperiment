@@ -50,7 +50,7 @@ int main() {
                 sentComplete = true;
             }else{
                 ue.sendRrcConnectionRequest();
-                std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             }
 
         }
@@ -68,7 +68,7 @@ int main() {
         }
         while(RrcState::RRC_IDLE != ue.getState()){
             ue.checkForPackets();
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             ue.sendRrcConnectionComplete();
         }
         // After receiving the release message
