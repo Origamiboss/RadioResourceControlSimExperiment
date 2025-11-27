@@ -24,8 +24,11 @@ int main() {
     PacketBuffer ue_to_du, du_to_ue, du_to_cu, cu_to_du;
 
     UeRrc ue(&du_to_ue, &ue_to_du);
-    DistributedUnit du(&ue_to_du, &cu_to_du, &du_to_cu, &du_to_ue);
-    CentralUnit cu(&cu_to_du, &du_to_cu);
+
+    const optionType = 0;
+
+    DistributedUnit du(&ue_to_du, &cu_to_du, &du_to_cu, &du_to_ue, optionType);
+    CentralUnit cu(&cu_to_du, &du_to_cu, optionType);
 
     std::atomic<bool> running = true;
 

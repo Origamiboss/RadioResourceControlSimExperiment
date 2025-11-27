@@ -25,8 +25,8 @@ private:
     LatencyModel latency;
 
     //private functions
-    PDcp::Bytes processDownlink(pdcp::PDcp::Bytes& raw);
-    PDcp::Bytes proccessUpLink(pdcp::PDcp::Bytes& raw);
+    pdcp::PDcp::Bytes processDownlink(pdcp::PDcp::Bytes& raw);
+    pdcp::PDcp::Bytes proccessUpLink(pdcp::PDcp::Bytes& raw);
     int computeFronthaulDelayUs(size_t packetSizeBytes);
     int computeUuDelayUs();
     int computeProcessingDelayUs();
