@@ -108,6 +108,7 @@ void CentralUnit::sendDummyData() {
 void CentralUnit::receiveRrcConnectionComplete() {
     
     std::cout << "CentralUnit received RRCConnectionComplete\n";
+    sendRrcRelease();
     state = RrcState::RRC_CONNECTED;
 }
 void CentralUnit::receiveRrcConnectionRequest() {
