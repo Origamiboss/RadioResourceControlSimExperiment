@@ -83,8 +83,9 @@ void UeRrc::receiveRrcRelease() {
 }
 
 void UeRrc::checkForPackets() {
+    if(myBuffer->empty()) return;
     std::cout << "[UE] Waiting for packets...\n";
-    auto optPacket = myBuffer->waitForPacket(); // this BLOCKS until packet arrives
+    auto optPacket = myBuffer->getPacket(); // this BLOCKS until packet arrives
     std::cout << "[UE] Got a packet\n";
     if (!optPacket) return;
 
