@@ -32,7 +32,7 @@ void DistributedUnit::checkForCuPackets() {
 
         std::cout << "[DU] Forwarding CU packet to UE\n";
         f2uBuffer->sendPacket(pdcpPacket);   // send to CU
-        std::cout << "[DU] CU packet forwarded to UE\n";
+        
     }
 }
 void DistributedUnit::checkForUePackets() {
@@ -50,5 +50,6 @@ void DistributedUnit::checkForUePackets() {
 
         std::cout << "[DU] Forwarding UE packet to CU\n";
         f2cBuffer->sendPacket(pdcpPacket);   // back to UE
+        std::cout << "[DU] CU packet forwarded to UE\n";
     }
 }
