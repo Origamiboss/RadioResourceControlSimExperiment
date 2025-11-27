@@ -19,14 +19,14 @@ void DistributedUnit::checkForPackets() {
 
 void DistributedUnit::checkForUePackets() {
     while (f1uBuffer->empty()) {
-        PDcp::Bytes p = f1uBuffer->getPacket();
+        pdcp::PDcp::Bytes p = f1uBuffer->getPacket();
         std::cout << "[DU] Forwarding UE packet to CU\n";
         f1cBuffer->sendPacket(p);   // send to CU
     }
 }
 void DistributedUnit::checkForCuPackets() {
     while (f1cBuffer->empty()) {
-        PDcp::Bytes p = f1cBuffer->getPacket();
+        pdcp::PDcp::Bytes p = f1cBuffer->getPacket();
         std::cout << "[DU] Forwarding CU packet to UE\n";
         f1uBuffer->sendPacket(p);   // back to UE
     }
