@@ -21,7 +21,7 @@ void DistributedUnit::checkForPackets() {
 
 void DistributedUnit::checkForCuPackets() {
     std::cout << "[DU] Waiting for CU packets...\n";
-    auto optPacket = f1uBuffer->getPacket(); // this BLOCKS until packet arrives
+    auto optPacket = f1uBuffer->waitForPacket(); // this BLOCKS until packet arrives
     std::cout << "[DU] CU packet received\n";
     if (!optPacket) return;
 
@@ -38,7 +38,7 @@ void DistributedUnit::checkForCuPackets() {
 }
 void DistributedUnit::checkForUePackets() {
     std::cout << "[DU] Waiting for UE packets...\n";
-    auto optPacket = f1cBuffer->getPacket(); // this BLOCKS until packet arrives
+    auto optPacket = f1cBuffer->waitForPacket(); // this BLOCKS until packet arrives
     std::cout << "[DU] UE packet received\n";
     if (!optPacket) return;
 
