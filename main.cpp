@@ -46,6 +46,7 @@ int main() {
             ue.checkForPackets();
             for(int i = 0; i < 1000; i++){
                 ue.sendDummyData();
+                std::cout << "Sent Dummy Data Packet " << i+1 << "\n";
                 std::this_thread::sleep_for(std::chrono::milliseconds(20));
                 ue.checkForPackets();
             }
