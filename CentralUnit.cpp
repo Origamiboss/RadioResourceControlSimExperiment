@@ -14,10 +14,10 @@ CentralUnit::CentralUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer) {
 
 
 void CentralUnit::checkForPackets() {
-    while (f1cBuffer->hasPacket()) {
+    while (f1cBuffer->empty()) {
 
         auto p = f1cBuffer->getPacket();
-        auto decap = pdcp_->onReceive(p);
+        auto decap = pdcp_->onReceive(p.value());
         if (!decap) continue;
 
         auto msg = *decap;
