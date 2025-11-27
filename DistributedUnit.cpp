@@ -13,6 +13,10 @@ DistributedUnit::DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* d1cBuffe
     pdcp_->setPcapLogger(&pcapLogger);
 }
 
+void DistributedUnit::checkForPackets() {
+    checkForUePackets();
+    checkForCuPackets();
+}
 
 void DistributedUnit::checkForUePackets() {
     while (ueBuffer->hasPacket()) {

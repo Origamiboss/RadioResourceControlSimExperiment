@@ -101,7 +101,9 @@ void UeRrc::checkForPackets() {
     }
 }
 
-
+RrcState UeRrc::getState() {
+    return state;
+}
 
 void UeRrc::log(const std::string& msg) {
     logFile << "[" << getCurrentTimestamp() << "] " << msg << std::endl;

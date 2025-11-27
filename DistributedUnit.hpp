@@ -22,6 +22,8 @@ private:
 public:
     DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* d1cBuffer, PacketBuffer* f1uBuffer);
 
+    void checkForPackets();
+
     void checkForUePackets();
 
     void checkForCuPackets();

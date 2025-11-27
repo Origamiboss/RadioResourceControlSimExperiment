@@ -33,6 +33,8 @@ public:
 
     void checkForPackets();
 
+    RrcState getState();
+
     void log(const std::string& msg);
     
     [[maybe_unused]] RrcState getState() const;
