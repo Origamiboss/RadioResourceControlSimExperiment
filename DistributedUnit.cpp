@@ -18,7 +18,7 @@ void DistributedUnit::checkForPackets() {
 }
 
 void DistributedUnit::checkForUePackets() {
-    while (!f1uBuffer->empty()) {
+    while (f1uBuffer->empty()) {
         std::cout << "[DU] Waiting for UE packets...\n";
         auto optPacket = f1uBuffer->getPacket(); // this BLOCKS until packet arrives
         if (!optPacket) continue;
@@ -29,16 +29,19 @@ void DistributedUnit::checkForUePackets() {
         auto &data = *payload;
 
 
-        auto pdcpPacket = data;
+        auto pdcpPacket = pdcp_->encapsulate(data);
 
         std::cout << "[DU] Forwarding UE packet to CU\n";
         f1cBuffer->sendPacket(pdcpPacket);   // send to CU
     }
 }
 void DistributedUnit::checkForCuPackets() {
-    while (!f1cBuffer->empty()) {
+    while (f1cBuffer->empty()) {
         std::cout << "[DU] Waiting for CU packets...\n";
-        auto payload = f1cBuffer->getPacket(); // this BLOCKS until packet arrives
+        auto optPacket = f1cBuffer->getPacket(); // this BLOCKS until packet arrives
+        if (!optPacket) continue;
+
+        auto payload = pdcp_->onReceive(*optPacket);
         if (!payload) continue;
 
         auto &data = *payload;

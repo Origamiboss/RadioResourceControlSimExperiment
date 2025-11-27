@@ -17,9 +17,10 @@ void CentralUnit::checkForPackets() {
     while (!f1cBuffer->empty()) {
 
         auto p = f1cBuffer->getPacket();
-        if (!p) continue;
+        auto decap = pdcp_->onReceive(p);
+        if (!decap) continue;
 
-        auto msg = *p;
+        auto msg = *decap;
 
         if (msg == pdcp::PDcp::Bytes{0x40, 0x12}) {
             receiveRrcConnectionRequest();
@@ -31,9 +32,10 @@ void CentralUnit::checkForPackets() {
 }
 void CentralUnit::sendRrcSetup() {
     pdcp::PDcp::Bytes payload = {0x50, 0xAA};  // RRC Setup
+    auto pdcpPacket = pdcp_->encapsulate(payload);
 
     std::cout << "[CU] Sending RRC Setup\n";
-    f1uBuffer->sendPacket(payload);
+    f1uBuffer->sendPacket(pdcpPacket);
 
     state = RrcState::RRC_SETUP_SENT;
 }
@@ -42,10 +44,11 @@ void CentralUnit::sendRrcRelease() {
     if (state == RrcState::RRC_CONNECTED) {
 
         pdcp::PDcp::Bytes payload = {0x5F, 0x21};
+        auto pdcpPacket = pdcp_->encapsulate(payload);
 
         std::cout << "Sent RRCRelease From CU\n";
 
-        f1uBuffer->sendPacket(payload);
+        f1uBuffer->sendPacket(pdcpPacket);
 
         state = RrcState::RRC_IDLE;
     }
@@ -53,10 +56,11 @@ void CentralUnit::sendRrcRelease() {
 void CentralUnit::sendRrcConnectionSetup() {
 
     pdcp::PDcp::Bytes payload = {0x50, 0xAA};
+    auto pdcpPacket = pdcp_->encapsulate(payload);
 
     std::cout << "Sent RRCConnectionSetup From CU\n";
 
-    f1uBuffer->sendPacket(payload);
+    f1uBuffer->sendPacket(pdcpPacket);
 
     
     
