@@ -20,6 +20,7 @@ void DistributedUnit::checkForPackets() {
 void DistributedUnit::checkForUePackets() {
     while (f1uBuffer->empty()) {
         pdcp::PDcp::Bytes p = f1uBuffer->getPacket();
+        
         std::cout << "[DU] Forwarding UE packet to CU\n";
         f1cBuffer->sendPacket(p);   // send to CU
     }

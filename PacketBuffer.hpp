@@ -24,6 +24,13 @@ public:
         }
         cond_var_.notify_all();  // Notify all waiting threads
     }
+    void sendPacket(Bytes raw){
+        {
+            std::lock_guard<std::mutex> lock(mutex_);
+            buffer.push(std::move(raw));  // Add packet to the buffer
+        }
+        cond_var_.notify_all();  // Notify all waiting threads
+    }
 
     // Try to get a packet; returns nullopt if empty
     std::optional<Bytes> getPacket() {
