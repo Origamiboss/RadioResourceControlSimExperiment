@@ -17,29 +17,43 @@
 #include "CentralUnit.hpp"
 #include "DistributedUnit.hpp"
 #include "PacketBuffer.hpp"
+#include <chrono>
+
 // #include <pcap.h>
 void SimulationType(int optionType);
 
 
 int main() {
     std::cout << "=== Functional Splitting RRC Simulator ===\n";
+
+    using clock = std::chrono::high_resolution_clock;
+
+    // --- Option 2 ---
+    auto start2 = clock::now();
     SimulationType(2);
+    auto end2 = clock::now();
+    auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
+    std::cout << "Option 2 completed in: " << duration2 << " ms\n\n";
+
+    // --- Option 6 ---
+    auto start6 = clock::now();
     SimulationType(6);
+    auto end6 = clock::now();
+    auto duration6 = std::chrono::duration_cast<std::chrono::milliseconds>(end6 - start6).count();
+    std::cout << "Option 6 completed in: " << duration6 << " ms\n\n";
+
+    // --- Option 7 ---
+    auto start7 = clock::now();
     SimulationType(7);
+    auto end7 = clock::now();
+    auto duration7 = std::chrono::duration_cast<std::chrono::milliseconds>(end7 - start7).count();
+    std::cout << "Option 7 completed in: " << duration7 << " ms\n\n";
 
+    std::cout << "=== All simulations complete ===\n";
+    std::cout << "Option 2 Time: " << duration2 << " ms\n";
+    std::cout << "Option 6 Time: " << duration6 << " ms\n";
+    std::cout << "Option 7 Time: " << duration7 << " ms\n";
 
-    //    char errbuf[PCAP_ERRBUF_SIZE];
-//    pcap_if_t* all_devices;
-//
-//    if (pcap_findalldevs(&all_devices, errbuf) == -1)
-//    {
-//        std::cerr << "npcap not found!" << errbuf << std::endl;
-//    }
-//    else
-//    {
-//        std::cout << "npcap installed successfully" << std::endl;
-//        pcap_freealldevs(all_devices);
-//    }
     return 0;
 }
 
