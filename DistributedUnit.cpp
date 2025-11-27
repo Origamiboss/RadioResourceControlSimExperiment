@@ -20,7 +20,7 @@ void DistributedUnit::checkForPackets() {
 void DistributedUnit::checkForUePackets() {
     while (f1uBuffer->empty()) {
         auto p = f1uBuffer->getPacket();
-        auto decap = pdcp_->onReceive(p);
+        auto decap = pdcp_->onReceive(*p);
         if (!decap) continue;
 
         auto msg = *decap;
@@ -36,7 +36,7 @@ void DistributedUnit::checkForCuPackets() {
     while (f1cBuffer->empty()) {
         auto p = f1cBuffer->getPacket();
 
-        auto decap = pdcp_->onReceive(p);
+        auto decap = pdcp_->onReceive(*p);
         if (!decap) continue;
 
         auto msg = *decap;
