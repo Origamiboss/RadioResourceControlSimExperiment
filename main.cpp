@@ -18,6 +18,8 @@
 #include "DistributedUnit.hpp"
 #include "PacketBuffer.hpp"
 // #include <pcap.h>
+void SimulationType(int optionType);
+
 
 int main() {
     std::cout << "=== Functional Splitting RRC Simulator ===\n";
