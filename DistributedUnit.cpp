@@ -19,7 +19,7 @@ void DistributedUnit::checkForPackets() {
 
 void DistributedUnit::checkForUePackets() {
     while (f1uBuffer->empty()) {
-        auto optPacket = myBuffer->getPacket(); // this BLOCKS until packet arrives
+        auto optPacket = f1uBuffer->getPacket(); // this BLOCKS until packet arrives
         if (!optPacket) continue;
 
         auto payload = pdcp_->onReceive(*optPacket);
@@ -36,7 +36,7 @@ void DistributedUnit::checkForUePackets() {
 }
 void DistributedUnit::checkForCuPackets() {
     while (f1cBuffer->empty()) {
-        auto optPacket = myBuffer->getPacket(); // this BLOCKS until packet arrives
+        auto optPacket = f1cBuffer->getPacket(); // this BLOCKS until packet arrives
         if (!optPacket) continue;
 
         auto payload = pdcp_->onReceive(*optPacket);
