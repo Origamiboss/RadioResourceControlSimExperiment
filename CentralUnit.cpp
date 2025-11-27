@@ -15,8 +15,9 @@ CentralUnit::CentralUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer) {
 
 void CentralUnit::checkForPackets() {
     while (!f1cBuffer->empty()) {
-
+        std::cout << "[CU] Waiting for packets...\n";
         auto optPacket = f1cBuffer->waitForPacket(); // this BLOCKS until packet arrives
+        std::cout << "[CU] Packet received\n";
         if (!optPacket) continue;
 
         auto payload = pdcp_->onReceive(*optPacket);
