@@ -39,7 +39,9 @@ int main() {
 
         ue.sendRrcConnectionRequest();
         std::cout << "[UE] Sent RRC Request\n";
+        ue.sendRrcConnectionComplete();
 
+        /*
         bool sentComplete = false;
         while(!sentComplete){
             ue.checkForPackets();
@@ -54,11 +56,11 @@ int main() {
             }
 
         }
-        /*for(int i = 0; i < 1000; i++){
+        for(int i = 0; i < 1000; i++){
             ue.sendDummyData();
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
             ue.checkForPackets();
-        }*/
+        }
         
 
         // After receiving the setup message
@@ -71,6 +73,7 @@ int main() {
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             ue.sendRrcConnectionComplete();
         }
+        */
         // After receiving the release message
         if (ue.getState() == RrcState::RRC_IDLE) {
             std::cout << "[UE] Release received, ending\n";
