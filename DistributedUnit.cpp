@@ -14,7 +14,7 @@ DistributedUnit::DistributedUnit(PacketBuffer* f1cBuffer, PacketBuffer* f2cBuffe
 
 void DistributedUnit::checkForPackets() {
     checkForUePackets();
-    //checkForCuPackets();
+    checkForCuPackets();
 }
 
 void DistributedUnit::checkForUePackets() {
