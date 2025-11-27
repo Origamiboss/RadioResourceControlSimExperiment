@@ -22,9 +22,9 @@ void DistributedUnit::checkForPackets() {
 void DistributedUnit::checkForCuPackets() {
     std::cout << "[DU] Waiting for CU packets...\n";
     auto optPacket = f1uBuffer->waitForPacket(); // this BLOCKS until packet arrives
-    std::cout << "[DU] CU packet received\n";
+    
     if (!optPacket) return;
-
+    std::cout << "[DU] CU packet received\n";
     auto payload = pdcp_->onReceive(*optPacket);
     if (!payload) return;
 
