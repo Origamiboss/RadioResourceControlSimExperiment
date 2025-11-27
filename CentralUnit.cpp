@@ -16,11 +16,13 @@ CentralUnit::CentralUnit(PacketBuffer* f1cBuffer, PacketBuffer* f1uBuffer) {
 void CentralUnit::checkForPackets() {
     while (!f1cBuffer->empty()) {
 
-        auto p = f1cBuffer->getPacket();
-        auto decap = pdcp_->onReceive(p);
-        if (!decap) continue;
+        auto optPacket = f1uBuffer->getPacket(); // this BLOCKS until packet arrives
+        if (!optPacket) continue;
 
-        auto msg = *decap;
+        auto payload = pdcp_->onReceive(*optPacket);
+        if (!payload) continue;
+
+        auto msg = *payload;
 
         if (msg == pdcp::PDcp::Bytes{0x40, 0x12}) {
             receiveRrcConnectionRequest();
