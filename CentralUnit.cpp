@@ -85,7 +85,7 @@ void CentralUnit::sendRrcConnectionSetup() {
 }
 void CentralUnit::sendDummyData() {
     if (state == RrcState::RRC_CONNECTED) {
-        const size_t dataSize = 2000;  // 2 KB dummy packet
+        const size_t dataSize = 1 * 1024 * 1024;  // 10 MB dummy packet
         pdcp::PDcp::Bytes payload;
         payload.resize(dataSize);
 
@@ -100,7 +100,6 @@ void CentralUnit::sendDummyData() {
         logFile << "[" << getCurrentTimestamp() 
                 << "] [Network -> UE] sent Dummy Data (" << dataSize << " bytes)\n";
 
-        std::cout << "Sent Dummy Data: " << dataSize << " bytes\n";
         applyLatency(pdcpPacket.size());
         f1uBuffer->sendPacket(pdcpPacket);
     }

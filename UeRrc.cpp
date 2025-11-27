@@ -76,7 +76,7 @@ void UeRrc::sendRrcConnectionComplete() {
 
 void UeRrc::sendDummyData() {
     if (state == RrcState::RRC_CONNECTED) {
-        const size_t dataSize = 2000;  // 2 KB dummy packet
+        onst size_t dataSize = 1 * 1024 * 1024;  // 10 MB dummy packet
         pdcp::PDcp::Bytes payload;
         payload.resize(dataSize);
 
