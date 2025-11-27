@@ -20,19 +20,39 @@
 // #include <pcap.h>
 
 int main() {
+    std::cout << "=== Functional Splitting RRC Simulator ===\n";
+    SimulationType(2);
+    SimulationType(6);
+    SimulationType(7);
 
+
+    //    char errbuf[PCAP_ERRBUF_SIZE];
+//    pcap_if_t* all_devices;
+//
+//    if (pcap_findalldevs(&all_devices, errbuf) == -1)
+//    {
+//        std::cerr << "npcap not found!" << errbuf << std::endl;
+//    }
+//    else
+//    {
+//        std::cout << "npcap installed successfully" << std::endl;
+//        pcap_freealldevs(all_devices);
+//    }
+    return 0;
+}
+
+void SimulationType(int optionType){
     PacketBuffer ue_to_du, du_to_ue, du_to_cu, cu_to_du;
 
     UeRrc ue(&du_to_ue, &ue_to_du);
 
-    const int optionType = 2;
 
     DistributedUnit du(&ue_to_du, &cu_to_du, &du_to_cu, &du_to_ue, optionType);
     CentralUnit cu(&cu_to_du, &du_to_cu, optionType);
 
     std::atomic<bool> running = true;
-
-    std::cout << "=== LTE RRC Simulator ===\n";
+    std::cout << "Starting Option Type " << optionType << " Simulation...\n";
+    
 
     // ---------- UE Thread ----------
     std::thread ueThread([&]() {
@@ -63,10 +83,17 @@ int main() {
             ue.sendRrcConnectionComplete();
             std::cout << "[UE] Sent RRC Complete\n";
         }
-        while(RrcState::RRC_IDLE != ue.getState()){
+        while (running) {
             ue.checkForPackets();
-            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-            ue.sendRrcConnectionComplete();
+
+            // When CU sends RRC Release, UE goes idle
+            if (ue.getState() == RrcState::RRC_IDLE) {
+                std::cout << "[UE] Release received, ending\n";
+                running = false;
+                break;
+            }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
         
         // After receiving the release message
@@ -107,21 +134,5 @@ int main() {
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
-    std::cout << "\nSimulation complete. Check Logs/ for details.\n";
-    return 0;
-
-
-    //    char errbuf[PCAP_ERRBUF_SIZE];
-//    pcap_if_t* all_devices;
-//
-//    if (pcap_findalldevs(&all_devices, errbuf) == -1)
-//    {
-//        std::cerr << "npcap not found!" << errbuf << std::endl;
-//    }
-//    else
-//    {
-//        std::cout << "npcap installed successfully" << std::endl;
-//        pcap_freealldevs(all_devices);
-//    }
-
+    std::cout << "\n Option Type "<< optionType << " Simulation complete. Check Logs/ for details.\n";
 }
