@@ -6,6 +6,7 @@
 #include "PDcp.hpp"
 #include "RrcState.hpp"
 #include "PacketBuffer.hpp"
+#include "LatencyModel.hpp"
 
 class CentralUnit {
 private:
@@ -20,7 +21,7 @@ private:
     PacketBuffer* theirBuffer;
 
     int optionType;
-
+    LatencyModel latency;
     
     int computeFronthaulDelayUs(size_t sizeBytes);
     int computeProcessingDelayUs();
