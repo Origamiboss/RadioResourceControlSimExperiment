@@ -6,7 +6,7 @@
 class Attacker {
 public:
     std::atomic<bool>* running;
-    Attacker(PacketBuffer* targetBuffer, int sizeOfPackets);
+    Attacker(PacketBuffer* targetBuffer, int sizeOfPackets, std::atomic<bool>* runFlag);
 
     pdcp::PDcp::Bytes createFuzzingPackets(int numOfBytes);
     void attackTargetBuffer();

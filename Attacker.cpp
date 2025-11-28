@@ -9,8 +9,8 @@
 #include "Attacker.hpp"    // <-- MUST include your class declaration
 #include "PDcp.hpp"
 
-Attacker::Attacker(PacketBuffer* targetBuffer, int sizeOfPackets)
-    : targetBuffer_(targetBuffer), sizeOfPackets_(sizeOfPackets)
+Attacker::Attacker(PacketBuffer* targetBuffer, int sizeOfPackets, std::atomic<bool>* runFlag)
+    : targetBuffer_(targetBuffer), sizeOfPackets_(sizeOfPackets), running(runFlag)
 {
     pdcp_ = std::make_unique<pdcp::PDcp>("Network-PDCP");
 
