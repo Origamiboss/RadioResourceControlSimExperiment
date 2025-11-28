@@ -3,12 +3,27 @@ project(Analyzer)
 
 set(CMAKE_CXX_STANDARD 23)
 
+# -------------------------
+# PCAP detection
+# -------------------------
 if(WIN32)
     set(PCAP_ROOT "C:/Program Files/Npcap" CACHE PATH "Npcap install directory")
-    find_path(PCAP_INCLUDE_DIR pcap.h PATHS "${PCAP_ROOT}/Include")
-    find_library(PCAP_LIBRARY NAMES wpcap PATHS "${PCAP_ROOT}/Lib/x64")
-else()
-    # Linux/Mac: use pkg-config instead of find_package(PCAP)
+
+    find_path(PCAP_INCLUDE_DIR
+        NAMES pcap.h
+        PATHS "${PCAP_ROOT}/Include"
+    )
+
+    find_library(PCAP_LIBRARY
+        NAMES wpcap Packet
+        PATHS "${PCAP_ROOT}/Lib/x64"
+    )
+
+    if(NOT PCAP_INCLUDE_DIR OR NOT PCAP_LIBRARY)
+        message(FATAL_ERROR "Npcap not found! Install from https://npcap.com/")
+    endif()
+
+else()  # Linux or macOS
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(PCAP REQUIRED libpcap)
 
@@ -16,7 +31,9 @@ else()
     set(PCAP_LIBRARY ${PCAP_LIBRARIES})
 endif()
 
-# List only .cpp files here
+# -------------------------
+# Sources
+# -------------------------
 add_executable(Analyzer
     main.cpp
     UeRrc.cpp
@@ -29,9 +46,17 @@ add_executable(Analyzer
     DistributedUnit.cpp
 )
 
-# Include directories for headers
-target_include_directories(Analyzer PRIVATE include ${PCAP_INCLUDE_DIR})
+# -------------------------
+# Include directories
+# -------------------------
+target_include_directories(Analyzer PRIVATE
+    include
+    ${PCAP_INCLUDE_DIR}
+)
 
-# Link PCAP
-target_link_libraries(Analyzer PRIVATE ${PCAP_LIBRARY})
-
+# -------------------------
+# Link Libraries
+# -------------------------
+target_link_libraries(Analyzer PRIVATE
+    ${PCAP_LIBRARY}
+)
