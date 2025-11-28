@@ -54,12 +54,12 @@ int main() {
     auto startex2 = clock::now();
     ExploitSimulationType(2);
     auto endex2 = clock::now();
-    auto durationex2 = std::chrono::duration_cast<std::chrono::milliseconds>(endex - startex).count();
+    auto durationex2 = std::chrono::duration_cast<std::chrono::milliseconds>(endex2 - startex2).count();
 
     auto startex7 = clock::now();
     ExploitSimulationType(7);
     auto endex7 = clock::now();
-    auto durationex7 = std::chrono::duration_cast<std::chrono::milliseconds>(endex - startex).count();
+    auto durationex7 = std::chrono::duration_cast<std::chrono::milliseconds>(endex7 - startex7).count();
 
     std::cout << "=== All simulations complete ===\n";
     std::cout << "Option 2 Time: " << duration2 << " ms\n";
