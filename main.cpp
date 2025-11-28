@@ -152,89 +152,63 @@ void SimulationType(int optionType){
 void ExploitSimulationType(int optionType){
     PacketBuffer ue_to_du, du_to_ue, du_to_cu, cu_to_du;
 
+    std::atomic<bool> running = true;
+
     UeRrc ue(&du_to_ue, &ue_to_du);
-    std::cout << "Initializing Attacker..\n";
-    Attacker attacker(&ue_to_du, 2); // Attack packets of size 2 bytes
-    std::cout << "Attacker Initilized..\n";
+    Attacker attacker(&ue_to_du, 2, &running);
 
     DistributedUnit du(&ue_to_du, &cu_to_du, &du_to_cu, &du_to_ue, optionType);
     CentralUnit cu(&cu_to_du, &du_to_cu, optionType);
 
-    std::atomic<bool> running = true;
-    std::cout << "Starting Exploit Option Type " << optionType << " Simulation...\n";
-    
-
-    // ---------- UE Thread ----------
-    std::thread ueThread([&]() {
-
-        ue.sendRrcConnectionRequest();
-        std::cout << "[UE] Sent RRC Request\n";
-        ue.checkForPackets();
-        bool sentComplete = false;
-        while(!sentComplete){
-            ue.checkForPackets();
-            // After receiving the setup message
-            if (ue.getState() == RrcState::RRC_CONNECTED) {
-                ue.sendRrcConnectionComplete();
-                std::cout << "[UE] Sent RRC Complete\n";
-                sentComplete = true;
-            }
-
-        }
-        for(int i = 0; i < 200; i++){
-            ue.sendDummyData();
-        }
-        ue.checkForPackets();
-
-        // After receiving the setup message
-        if (ue.getState() == RrcState::RRC_CONNECTED) {
-            ue.sendRrcConnectionComplete();
-            std::cout << "[UE] Sent RRC Complete\n";
-        }
-        while (running) {
-            ue.checkForPackets();
-
-            // When CU sends RRC Release, UE goes idle
-            if (ue.getState() == RrcState::RRC_IDLE) {
-                std::cout << "[UE] Release received, ending\n";
-                running = false;
-                break;
-            }
-
-        }
-        
-        // After receiving the release message
-        if (ue.getState() == RrcState::RRC_IDLE) {
-            std::cout << "[UE] Release received, ending\n";
-            running = false;
-        }
-
-    });
+    std::cout << "Starting Exploit Option Type " << optionType << "...\n";
 
     std::thread attackerThread([&]() {
         attacker.DoSAttack();
     });
-    // ---------- DU Thread ----------
+
+    std::thread ueThread([&]() {
+        ue.sendRrcConnectionRequest();
+
+        bool sentComplete = false;
+        while (!sentComplete && running) {
+            ue.checkForPackets();
+            if (ue.getState() == RrcState::RRC_CONNECTED) {
+                ue.sendRrcConnectionComplete();
+                sentComplete = true;
+            }
+        }
+
+        for(int i = 0; i < 200; i++){
+            ue.sendDummyData();
+        }
+
+        while (running) {
+            ue.checkForPackets();
+            if (ue.getState() == RrcState::RRC_IDLE) {
+                running = false;
+                break;
+            }
+        }
+    });
+
     std::thread duThread([&]() {
         while (running) {
             du.checkForPackets();
         }
     });
 
-    // ---------- CU Thread ----------
     std::thread cuThread([&]() {
-
         while (running) {
-
             cu.checkForPackets();
-
         }
     });
+
     ueThread.join();
+    running = false;           // <-- TELL ATTACKER TO STOP
     duThread.join();
     cuThread.join();
 
-    // UE processes setup
+    if (attackerThread.joinable()) attackerThread.join();  // <-- CRUCIAL
 
-    std::cout << "\n Exploit Option Type "<< optionType << " Simulation complete. Check Logs/ for details.\n";
+    std::cout << "\nExploit Option Type " << optionType << " complete.\n";
 }
