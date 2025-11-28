@@ -43,6 +43,15 @@ void Attacker::attackTargetBuffer() {
         targetBuffer_->sendPacket(pdcpPacket);
     }
 }
+void Attacker::DoSAttack(){
+    while (true) {
+        auto payload = static_cast<uint8_t>{0x00, 0x00};
+        auto pdcpPacket = pdcp_->encapsulate(payload);
+
+        // FIX: use targetBuffer_, NOT attackTargetBuffer
+        targetBuffer_->sendPacket(pdcpPacket);
+    }
+}
 void Attacker::log(const std::string& msg) {
     std::cout << msg << std::endl;
 }
