@@ -168,7 +168,7 @@ void ExploitDoSSimulationType(int optionType){
     std::cout << "Starting Exploit Option Type " << optionType << "...\n";
 
     std::thread attackerThread([&]() {
-        attacker.DoSAttack();
+        attacker->DoSAttack();
     });
 
     std::thread ueThread([&]() {
@@ -276,7 +276,7 @@ void FuzzingExploitSimulation(int optionType){
 
     // ---- Start FUZZING attacker thread ----
     std::thread attackerThread([&]() {
-        attacker.FuzzingAttack();
+        attacker->FuzzingAttack();
     });
 
     // ---- UE Thread (same as regular DoS simulation) ----
