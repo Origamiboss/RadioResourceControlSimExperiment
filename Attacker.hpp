@@ -10,6 +10,10 @@ public:
     pdcp::PDcp::Bytes createFuzzingPackets(int numOfBytes);
     void attackTargetBuffer();
 
+    void attackTargetBuffer();
+
+    void DoSAttack();
+
 private:
     PacketBuffer* targetBuffer_;      // <-- correct name
     int sizeOfPackets_;               // <-- match .cpp usage
