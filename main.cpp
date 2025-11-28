@@ -28,7 +28,7 @@ int main() {
     std::cout << "=== Functional Splitting RRC Simulator ===\n";
 
     using clock = std::chrono::high_resolution_clock;
-
+    /*
     // --- Option 2 ---
     auto start2 = clock::now();
     SimulationType(2);
@@ -49,16 +49,16 @@ int main() {
     auto end7 = clock::now();
     auto duration7 = std::chrono::duration_cast<std::chrono::milliseconds>(end7 - start7).count();
     std::cout << "Option 7 completed in: " << duration7 << " ms\n\n";
-
+    */
     auto startex = clock::now();
     ExploitSimulationType(2);
     auto endex = clock::now();
     auto durationex = std::chrono::duration_cast<std::chrono::milliseconds>(endex - startex).count();
 
     std::cout << "=== All simulations complete ===\n";
-    std::cout << "Option 2 Time: " << duration2 << " ms\n";
-    std::cout << "Option 6 Time: " << duration6 << " ms\n";
-    std::cout << "Option 7 Time: " << duration7 << " ms\n";
+    //std::cout << "Option 2 Time: " << duration2 << " ms\n";
+    //std::cout << "Option 6 Time: " << duration6 << " ms\n";
+    //std::cout << "Option 7 Time: " << duration7 << " ms\n";
     std::cout << "Exploit Option 2 Time: " << durationex << " ms\n";
 
     return 0;
