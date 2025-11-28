@@ -128,9 +128,9 @@ int DistributedUnit::computeProcessingDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 200;  // DU does very little
-        case 6: return 500;  // RLC processing
-        case 7: return 800;  // PHY processing
+        case 2: return 200;    // DU does small forwarding only
+        case 6: return 3000;   // DU does RLC processing: 3 ms
+        case 7: return 10000;  // DU heavy PHY: 10 ms
         default: return 300;
     }
 }

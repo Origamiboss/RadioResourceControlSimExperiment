@@ -134,10 +134,10 @@ int CentralUnit::computeFronthaulDelayUs(size_t sizeBytes)
 int CentralUnit::computeProcessingDelayUs()
 {
     switch (optionType) {
-        case 2: return 200;  // PDCP only
-        case 6: return 500;  // RLC processing
-        case 7: return 800;  // PHY heavy processing
-        default: return 300;
+        case 2: return 8000;   // CU does PDCP+RRC heavy: 8 ms
+        case 6: return 2000;   // CU does MAC scheduling: 2 ms
+        case 7: return 200;    // CU mostly control: 0.2 ms
+        default: return 500;
     }
 }
 
