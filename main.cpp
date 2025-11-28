@@ -29,52 +29,94 @@ void FuzzingExploitSimulation(int optionType);
 int main() {
     std::cout << "=== Functional Splitting RRC Simulator ===\n";
 
-    using clock = std::chrono::high_resolution_clock;
-    /*
-    // --- Option 2 ---
-    auto start2 = clock::now();
-    SimulationType(2);
-    auto end2 = clock::now();
-    auto duration2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
-    std::cout << "Option 2 completed in: " << duration2 << " ms\n\n";
+    bool running = true;
 
-    // --- Option 6 ---
-    auto start6 = clock::now();
-    SimulationType(6);
-    auto end6 = clock::now();
-    auto duration6 = std::chrono::duration_cast<std::chrono::milliseconds>(end6 - start6).count();
-    std::cout << "Option 6 completed in: " << duration6 << " ms\n\n";
+    while (running) {
+        std::cout << "\n===== MAIN MENU =====\n";
+        std::cout << "1. Run Normal Simulation (Option 2)\n";
+        std::cout << "2. Run Normal Simulation (Option 6)\n";
+        std::cout << "3. Run Normal Simulation (Option 7)\n";
+        std::cout << "4. Run DoS Exploit Simulation\n";
+        std::cout << "5. Run Fuzzing Exploit Simulation\n";
+        std::cout << "0. Exit Program\n";
+        std::cout << "Select an option: ";
 
-    // --- Option 7 ---
-    auto start7 = clock::now();
-    SimulationType(7);
-    auto end7 = clock::now();
-    auto duration7 = std::chrono::duration_cast<std::chrono::milliseconds>(end7 - start7).count();
-    std::cout << "Option 7 completed in: " << duration7 << " ms\n\n";
-    
-    auto startex2 = clock::now();
-    ExploitDoSSimulationType(2);
-    auto endex2 = clock::now();
-    auto durationex2 = std::chrono::duration_cast<std::chrono::milliseconds>(endex2 - startex2).count();
-    */
-    auto startex7 = clock::now();
-    ExploitDoSSimulationType(7);
-    auto endex7 = clock::now();
-    auto durationex7 = std::chrono::duration_cast<std::chrono::milliseconds>(endex7 - startex7).count();
-    /*
-    auto startFuzz = clock::now();
-    FuzzingExploitSimulation(7);  // or 2 / 6 / etc
-    auto endFuzz = clock::now();
-    */
-    std::cout << "=== All simulations complete ===\n";
-    //std::cout << "Option 2 Time: " << duration2 << " ms\n";
-    //std::cout << "Option 6 Time: " << duration6 << " ms\n";
-    //std::cout << "Option 7 Time: " << duration7 << " ms\n";
+        int choice;
+        std::cin >> choice;
 
-    //std::cout << "Exploit Option 2 Time: " << durationex2 << " ms\n";
-    std::cout << "Exploit Option 7 Time: " << durationex7 << " ms\n";
-    //std::cout << "Fuzzing Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(endFuzz - startFuzz).count() << " ms\n";
-    
+        using clock = std::chrono::high_resolution_clock;
+
+        switch (choice) {
+            case 1: {
+                auto s = clock::now();
+                SimulationType(2);
+                auto e = clock::now();
+                std::cout << "[TIME] Completed in "
+                          << std::chrono::duration_cast<std::chrono::milliseconds>(e - s).count()
+                          << " ms\n";
+                break;
+            }
+
+            case 2: {
+                auto s = clock::now();
+                SimulationType(6);
+                auto e = clock::now();
+                std::cout << "[TIME] Completed in "
+                          << std::chrono::duration_cast<std::chrono::milliseconds>(e - s).count()
+                          << " ms\n";
+                break;
+            }
+
+            case 3: {
+                auto s = clock::now();
+                SimulationType(7);
+                auto e = clock::now();
+                std::cout << "[TIME] Completed in "
+                          << std::chrono::duration_cast<std::chrono::milliseconds>(e - s).count()
+                          << " ms\n";
+                break;
+            }
+
+            case 4: {
+                std::cout << "Select RRC Option (2, 6, or 7): ";
+                int opt;
+                std::cin >> opt;
+
+                auto s = clock::now();
+                ExploitDoSSimulationType(opt);
+                auto e = clock::now();
+
+                std::cout << "[TIME] DoS Simulation completed in "
+                          << std::chrono::duration_cast<std::chrono::milliseconds>(e - s).count()
+                          << " ms\n";
+                break;
+            }
+
+            case 5: {
+                std::cout << "Select RRC Option (2, 6, or 7): ";
+                int opt;
+                std::cin >> opt;
+
+                auto s = clock::now();
+                FuzzingExploitSimulation(opt);
+                auto e = clock::now();
+
+                std::cout << "[TIME] Fuzzing Simulation completed in "
+                          << std::chrono::duration_cast<std::chrono::milliseconds>(e - s).count()
+                          << " ms\n";
+                break;
+            }
+
+            case 0:
+                running = false;
+                std::cout << "Exiting simulator.\n";
+                break;
+
+            default:
+                std::cout << "Invalid choice. Try again.\n";
+        }
+    }
+
     return 0;
 }
 
