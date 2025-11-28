@@ -6,6 +6,6 @@
 #include<chrono>
 // Declaration of the function
 std::string getCurrentTimestamp();
-static inline long elapsedMs(const std::chrono::steady_clock::time_point &start);
+static long elapsedMs(const std::chrono::steady_clock::time_point &start);
 #endif // UTILS_HPP
 
