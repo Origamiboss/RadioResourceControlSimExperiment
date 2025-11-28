@@ -22,7 +22,7 @@ private:
 
 public:
     static constexpr int T300_MS = 200;   // Wait time for RRC Setup
-    static constexpr int MAX_RRC_RETRIES = 4;
+    static constexpr int MAX_RRC_RETRIES = 10;
 
     UeRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer);
 
