@@ -20,7 +20,7 @@
 #include "Utils.hpp"
 #include "Attacker.hpp"
 #include <chrono>
-using clock = std::chrono::steady_clock;
+
 // #include <pcap.h>
 void SimulationType(int optionType);
 void ExploitSimulationType(int optionType);
@@ -139,6 +139,8 @@ void SimulationType(int optionType){
     std::cout << "\nOption Type "<< optionType << " Simulation complete.\n";
 }
 void ExploitSimulationType(int optionType){
+    using clock = std::chrono::steady_clock;
+
     PacketBuffer ue_to_du, du_to_ue, du_to_cu, cu_to_du;
 
     std::atomic<bool> running = true;
