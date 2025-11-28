@@ -176,7 +176,7 @@ void ExploitSimulationType(int optionType){
             }
 
             // Timer expired?
-            if (Utils::elapsedMs(tStart) > UeRrc::T300_MS) {
+            if (elapsedMs(tStart) > UeRrc::T300_MS) {
 
                 if (retries >= UeRrc::MAX_RRC_RETRIES) {
                     std::cout << "[UE] T300 expired: MAX RETRIES REACHED — giving up.\n";
