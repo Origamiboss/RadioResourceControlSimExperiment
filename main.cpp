@@ -30,7 +30,7 @@ int main() {
     std::cout << "=== Functional Splitting RRC Simulator ===\n";
 
     using clock = std::chrono::high_resolution_clock;
-    
+    /*
     // --- Option 2 ---
     auto start2 = clock::now();
     SimulationType(2);
@@ -56,27 +56,25 @@ int main() {
     ExploitDoSSimulationType(2);
     auto endex2 = clock::now();
     auto durationex2 = std::chrono::duration_cast<std::chrono::milliseconds>(endex2 - startex2).count();
-
+    */
     auto startex7 = clock::now();
     ExploitDoSSimulationType(7);
     auto endex7 = clock::now();
     auto durationex7 = std::chrono::duration_cast<std::chrono::milliseconds>(endex7 - startex7).count();
-
+    /*
     auto startFuzz = clock::now();
     FuzzingExploitSimulation(7);  // or 2 / 6 / etc
     auto endFuzz = clock::now();
-
+    */
     std::cout << "=== All simulations complete ===\n";
-    std::cout << "Option 2 Time: " << duration2 << " ms\n";
-    std::cout << "Option 6 Time: " << duration6 << " ms\n";
-    std::cout << "Option 7 Time: " << duration7 << " ms\n";
+    //std::cout << "Option 2 Time: " << duration2 << " ms\n";
+    //std::cout << "Option 6 Time: " << duration6 << " ms\n";
+    //std::cout << "Option 7 Time: " << duration7 << " ms\n";
 
-    std::cout << "Exploit Option 2 Time: " << durationex2 << " ms\n";
-    std::cout << "Exploit Option 2 Time: " << durationex7 << " ms\n";
-
-    std::cout << "Fuzzing Time: " 
-     << std::chrono::duration_cast<std::chrono::milliseconds>(endFuzz - startFuzz).count()
-     << " ms\n";
+    //std::cout << "Exploit Option 2 Time: " << durationex2 << " ms\n";
+    std::cout << "Exploit Option 7 Time: " << durationex7 << " ms\n";
+    //std::cout << "Fuzzing Time: " << std::chrono::duration_cast<std::chrono::milliseconds>(endFuzz - startFuzz).count() << " ms\n";
+    
     return 0;
 }
 
