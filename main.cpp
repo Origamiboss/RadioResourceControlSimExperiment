@@ -153,8 +153,9 @@ void ExploitSimulationType(int optionType){
     PacketBuffer ue_to_du, du_to_ue, du_to_cu, cu_to_du;
 
     UeRrc ue(&du_to_ue, &ue_to_du);
-
+    std::cout << "Initializing Attacker..\n";
     Attacker attacker(&ue_to_du, 2); // Attack packets of size 2 bytes
+    std::cout << "Attacker Initilized..\n";
 
     DistributedUnit du(&ue_to_du, &cu_to_du, &du_to_cu, &du_to_ue, optionType);
     CentralUnit cu(&cu_to_du, &du_to_cu, optionType);
