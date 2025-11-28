@@ -161,7 +161,7 @@ void ExploitSimulationType(int optionType){
     CentralUnit cu(&cu_to_du, &du_to_cu, optionType);
 
     std::atomic<bool> running = true;
-    std::cout << "Starting Option Type " << optionType << " Simulation...\n";
+    std::cout << "Starting Exploit Option Type " << optionType << " Simulation...\n";
     
 
     // ---------- UE Thread ----------
@@ -236,5 +236,5 @@ void ExploitSimulationType(int optionType){
 
     // UE processes setup
 
-    std::cout << "\n Option Type "<< optionType << " Simulation complete. Check Logs/ for details.\n";
+    std::cout << "\n Exploit Option Type "<< optionType << " Simulation complete. Check Logs/ for details.\n";
 }

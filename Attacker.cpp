@@ -44,8 +44,8 @@ void Attacker::attackTargetBuffer() {
     }
 }
 void Attacker::DoSAttack(){
-    while (true) {
-        pdcp::PDcp::Bytes payload = {0x43, 0x34};
+    while (running->load()) {
+        pdcp::PDcp::Bytes payload = {0xFF, 0xFF};
         auto pdcpPacket = pdcp_->encapsulate(payload);
 
         // FIX: use targetBuffer_, NOT attackTargetBuffer
