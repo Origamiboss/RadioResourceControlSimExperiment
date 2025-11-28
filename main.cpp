@@ -24,7 +24,7 @@
 // #include <pcap.h>
 void SimulationType(int optionType);
 void ExploitDoSSimulationType(int optionType);
-void void FuzzingExploitSimulation(int optionType);
+void FuzzingExploitSimulation(int optionType);
 
 int main() {
     std::cout << "=== Functional Splitting RRC Simulator ===\n";
