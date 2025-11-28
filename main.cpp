@@ -17,6 +17,7 @@
 #include "CentralUnit.hpp"
 #include "DistributedUnit.hpp"
 #include "PacketBuffer.hpp"
+#include "Utils.hpp"
 #include "Attacker.hpp"
 #include <chrono>
 

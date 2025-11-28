@@ -18,10 +18,12 @@ private:
     PacketBuffer* myBuffer;
     PacketBuffer* theirBuffer;
 
+    
+
+public:
     static constexpr int T300_MS = 200;   // Wait time for RRC Setup
     static constexpr int MAX_RRC_RETRIES = 4;
 
-public:
     UeRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer);
 
     ~UeRrc();
