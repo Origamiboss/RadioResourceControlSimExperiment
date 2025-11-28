@@ -9,9 +9,6 @@ public:
 
     pdcp::PDcp::Bytes createFuzzingPackets(int numOfBytes);
     void attackTargetBuffer();
-
-    void attackTargetBuffer();
-
     void DoSAttack();
 
 private:
