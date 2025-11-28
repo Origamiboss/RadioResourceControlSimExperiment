@@ -6,6 +6,7 @@
 #include <optional>
 #include <mutex>
 #include <condition_variable>
+#include <atomic>
 
 using Bytes = std::vector<uint8_t>;
 
@@ -14,45 +15,60 @@ private:
     std::queue<Bytes> buffer;
     std::mutex mutex_;
     std::condition_variable cond_var_;
+    size_t maxSize = 1000;                // Limit queue capacity
+    std::atomic<size_t> droppedPackets{0};
 
 public:
     // Put a packet into the buffer and notify waiting threads
     void sendPacket(const std::vector<uint8_t>& raw) {
-        {
-            std::lock_guard<std::mutex> lock(mutex_);
-            buffer.push(raw);  // Add packet to the buffer
+        std::unique_lock<std::mutex> lock(mutex_);
+
+        // Check if queue is full
+        if (buffer.size() >= maxSize) {
+            droppedPackets++;   // count as dropped
+            return;             // do NOT push packet
         }
-        cond_var_.notify_all();  // Notify all waiting threads
+
+        buffer.push(raw);  // Insert packet normally
+        lock.unlock();     // Unlock before notifying
+        cond_var_.notify_all();
     }
 
     // Try to get a packet; returns nullopt if empty
     std::optional<Bytes> getPacket() {
         std::lock_guard<std::mutex> lock(mutex_);
         if (buffer.empty()) {
-            return std::nullopt;  // Return an empty optional if the buffer is empty
+            return std::nullopt;
         }
 
-        Bytes pkt = buffer.front();  // Copy the packet from the front of the queue
-        buffer.pop();  // Remove the packet from the queue
-        return pkt;  // Return the copied packet as an optional
+        Bytes pkt = buffer.front();
+        buffer.pop();
+        return pkt;
     }
 
-    // Wait for a new packet to arrive; returns the packet when available
+    // Wait for a new packet to arrive
     std::optional<Bytes> waitForPacket() {
         std::unique_lock<std::mutex> lock(mutex_);
-        
-        // Wait until there's a packet available
+
         cond_var_.wait(lock, [this] { return !buffer.empty(); });
 
-        Bytes pkt = buffer.front();  // Copy the packet from the front of the queue
-        buffer.pop();  // Remove the packet from the queue
-        return pkt;  // Return the copied packet as an optional
+        Bytes pkt = buffer.front();
+        buffer.pop();
+        return pkt;
     }
 
-    // Non-const because it accesses the mutex
     bool empty() {
         std::lock_guard<std::mutex> lock(mutex_);
         return buffer.empty();
     }
-};
 
+    // Allow access to dropped packet count
+    size_t getDroppedCount() const {
+        return droppedPackets.load();
+    }
+
+    // Allow changing buffer size (optional)
+    void setMaxSize(size_t size) {
+        maxSize = size;
+    }
+};

@@ -86,40 +86,23 @@ void SimulationType(int optionType){
         bool sentComplete = false;
         while(!sentComplete){
             ue.checkForPackets();
-            // After receiving the setup message
             if (ue.getState() == RrcState::RRC_CONNECTED) {
                 ue.sendRrcConnectionComplete();
                 std::cout << "[UE] Sent RRC Complete\n";
                 sentComplete = true;
             }
-
         }
+
         for(int i = 0; i < 200; i++){
             ue.sendDummyData();
         }
-        ue.checkForPackets();
 
-        // After receiving the setup message
-        if (ue.getState() == RrcState::RRC_CONNECTED) {
-            ue.sendRrcConnectionComplete();
-            std::cout << "[UE] Sent RRC Complete\n";
-        }
         while (running) {
             ue.checkForPackets();
-
-            // When CU sends RRC Release, UE goes idle
             if (ue.getState() == RrcState::RRC_IDLE) {
-                std::cout << "[UE] Release received, ending\n";
                 running = false;
                 break;
             }
-
-        }
-        
-        // After receiving the release message
-        if (ue.getState() == RrcState::RRC_IDLE) {
-            std::cout << "[UE] Release received, ending\n";
-            running = false;
         }
 
     });
@@ -134,20 +117,25 @@ void SimulationType(int optionType){
 
     // ---------- CU Thread ----------
     std::thread cuThread([&]() {
-
         while (running) {
-
             cu.checkForPackets();
-
         }
     });
+
     ueThread.join();
     duThread.join();
     cuThread.join();
 
-    // UE processes setup
 
-    std::cout << "\n Option Type "<< optionType << " Simulation complete. Check Logs/ for details.\n";
+    // *************** NEW: PACKET DROP REPORT ***************
+    std::cout << "\n=== Packet Drop Summary (Option " << optionType << ") ===\n";
+    std::cout << "UE -> DU dropped: " << ue_to_du.getDroppedCount() << "\n";
+    std::cout << "DU -> UE dropped: " << du_to_ue.getDroppedCount() << "\n";
+    std::cout << "DU -> CU dropped: " << du_to_cu.getDroppedCount() << "\n";
+    std::cout << "CU -> DU dropped: " << cu_to_du.getDroppedCount() << "\n";
+    // ********************************************************
+
+    std::cout << "\nOption Type "<< optionType << " Simulation complete.\n";
 }
 void ExploitSimulationType(int optionType){
     PacketBuffer ue_to_du, du_to_ue, du_to_cu, cu_to_du;
@@ -167,21 +155,52 @@ void ExploitSimulationType(int optionType){
     });
 
     std::thread ueThread([&]() {
-        ue.sendRrcConnectionRequest();
+        int retries = 0;
+        bool connected = false;
 
-        bool sentComplete = false;
-        while (!sentComplete && running) {
+        // ---- Send initial RRC Request ----
+        ue.sendRrcConnectionRequest();
+        auto tStart = clock::now();
+
+        while (running && !connected) {
+
             ue.checkForPackets();
+
+            // Check if DU/CU responded with RRC Setup
             if (ue.getState() == RrcState::RRC_CONNECTED) {
-                ue.sendRrcConnectionComplete();
-                sentComplete = true;
+                connected = true;
+                break;
+            }
+
+            // Timer expired?
+            if (Utils.elapsedMs(tStart) > UeRrc::T300_MS) {
+
+                if (retries >= UeRrc::MAX_RRC_RETRIES) {
+                    std::cout << "[UE] T300 expired: MAX RETRIES REACHED — giving up.\n";
+                    running = false;   // End simulation (UE fails to connect)
+                    return;
+                }
+
+                retries++;
+                std::cout << "[UE] T300 timeout — retransmitting RRC Connection Request (retry "
+                          << retries << ")\n";
+
+                ue.sendRrcConnectionRequest();
+                tStart = clock::now();
             }
         }
 
-        for(int i = 0; i < 200; i++){
+        if (!running) return;  // stop if attacker crushed UE
+
+        // ---- Send Connection Complete ----
+        ue.sendRrcConnectionComplete();
+
+        // (Optional) dummy data
+        for (int i = 0; i < 200; i++) {
             ue.sendDummyData();
         }
 
+        // ---- Wait for RRC Release ----
         while (running) {
             ue.checkForPackets();
             if (ue.getState() == RrcState::RRC_IDLE) {
@@ -204,11 +223,19 @@ void ExploitSimulationType(int optionType){
     });
 
     ueThread.join();
-    running = false;           // <-- TELL ATTACKER TO STOP
+    running = false;
     duThread.join();
     cuThread.join();
+    if (attackerThread.joinable()) attackerThread.join();
 
-    if (attackerThread.joinable()) attackerThread.join();  // <-- CRUCIAL
+
+    // *************** NEW: PACKET DROP REPORT ***************
+    std::cout << "\n=== PACKET DROP SUMMARY (EXPLOIT Option " << optionType << ") ===\n";
+    std::cout << "UE -> DU dropped: " << ue_to_du.getDroppedCount() << "\n";
+    std::cout << "DU -> UE dropped: " << du_to_ue.getDroppedCount() << "\n";
+    std::cout << "DU -> CU dropped: " << du_to_cu.getDroppedCount() << "\n";
+    std::cout << "CU -> DU dropped: " << cu_to_du.getDroppedCount() << "\n";
+    // ********************************************************
 
     std::cout << "\nExploit Option Type " << optionType << " complete.\n";
 }
