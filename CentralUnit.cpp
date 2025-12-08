@@ -179,8 +179,8 @@ int CentralUnit::computeFronthaulDelayUs(size_t sizeBytes)
 {
     double bits = sizeBytes * 8.0;
 
-    double serialization = (bits / (latency.fronthaulMbps * 1'000'000.0)) 
-                           * 1'000'000.0; // microseconds
+    double serialization = (bits / (latency.fronthaulMbps * 1000000.0)) 
+                           * 1000000.0; // microseconds
 
     int jitter = (rand() % (latency.jitterUs * 2)) - latency.jitterUs;
 
