@@ -113,13 +113,14 @@ int DistributedUnit::computeFronthaulDelayUs(size_t packetSizeBytes)
            (int)serialization + jitter;
 }
 
+
 int DistributedUnit::computeUuDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 1000;      // Slower radio in high-level splits
-        case 6: return 4000;      // Mid-level
-        case 7: return 6000;      // 7.1 overloaded fronthaul -> high radio latency
+        case 2: return 50;    // fastest radio latency (us)
+        case 6: return 150;   // medium
+        case 7: return 300;   // slowest (7.1)
         default: return 200;
     }
 }
@@ -128,9 +129,9 @@ int DistributedUnit::computeProcessingDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 1000;      // Slightly exaggerated idle DU
-        case 6: return 2000;     // Heavy RLC + extra PHY load
-        case 7: return 3000;     // Option 7.1 low-PHY meltdown under attack
+        case 2: return 80;    // fastest processing
+        case 6: return 300;   // medium
+        case 7: return 600;   // slowest
         default: return 300;
     }
 }
