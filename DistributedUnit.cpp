@@ -128,9 +128,9 @@ int DistributedUnit::computeProcessingDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 1000;      // Slightly exaggerated idle DU
+        case 2: return 600;      // Slightly exaggerated idle DU
         case 6: return 800;     // Heavy RLC + extra PHY load
-        case 7: return 600;     // Option 7.1 low-PHY meltdown under attack
+        case 7: return 1200;     // Option 7.1 low-PHY meltdown under attack
         default: return 300;
     }
 }
