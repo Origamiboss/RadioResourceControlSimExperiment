@@ -125,19 +125,19 @@ int CentralUnit::computeFronthaulDelayUs(size_t sizeBytes)
 int CentralUnit::computeProcessingDelayUs()
 {
     switch (optionType) {
-        case 2: return 300;   // PDCP/RRC processing at CU (realistic 150–400 µs)
-        case 6: return 150;   // MAC scheduling (80–200 µs)
-        case 7: return 30;    // Minimal processing in low-layer option (20–50 µs)
-        default: return 200;
+        case 2: return 4000;   // PDCP + security heavy (~4 ms)
+        case 6: return 2000;   // RLC+MAC moderate (~2 ms)
+        case 7: return 3500;   // Option 7.1 high-PHY coding (3–4 ms)
+        default: return 500;
     }
 }
 
 int CentralUnit::computeUuDelayUs()
 {
     switch (optionType) {
-        case 2: return 300;   // Typical Uu scheduling + RF
+        case 2: return 300;
         case 6: return 150;
-        case 7: return 80;
+        case 7: return 120;   // More fronthaul bandwidth for 7.1 -> slightly higher delay
         default: return 200;
     }
 }
