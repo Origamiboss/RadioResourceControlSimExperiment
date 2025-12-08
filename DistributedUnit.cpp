@@ -117,10 +117,10 @@ int DistributedUnit::computeUuDelayUs()
 {
     switch (optionType)
     {
-        case 2:   return 300;  // High latency (PDCP high-level)
-        case 6:   return 150;  // Medium (RLC locally processed)
-        case 7:   return 60;   // Low latency (PHY split)
-        default:  return 200;
+        case 2: return 300;
+        case 6: return 150;
+        case 7: return 80;
+        default: return 200;
     }
 }
 
@@ -128,9 +128,9 @@ int DistributedUnit::computeProcessingDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 200;    // DU does small forwarding only
-        case 6: return 3000;   // DU does RLC processing: 3 ms
-        case 7: return 10000;  // DU heavy PHY: 10 ms
-        default: return 300;
+        case 2: return 50;     // DU does almost nothing (20–80 µs)
+        case 6: return 700;    // RLC + part-PHY (500–900 µs)
+        case 7: return 500;    // Full PHY processing (300–600 µs)
+        default: return 200;
     }
 }
