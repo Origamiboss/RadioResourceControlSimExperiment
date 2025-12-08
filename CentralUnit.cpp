@@ -125,9 +125,9 @@ int CentralUnit::computeFronthaulDelayUs(size_t sizeBytes)
 int CentralUnit::computeProcessingDelayUs()
 {
     switch (optionType) {
-        case 2: return 8000;   // CU does PDCP+RRC heavy: 8 ms
-        case 6: return 2000;   // CU does MAC scheduling: 2 ms
-        case 7: return 200;    // CU mostly control: 0.2 ms
+        case 2: return 1000;   // PDCP  (1 ms)
+        case 6: return 2000;   // Moderate (2 ms)
+        case 7: return 12000;  // Option 7.1 high-PHY extremely heavy (12 ms)
         default: return 500;
     }
 }
@@ -137,7 +137,7 @@ int CentralUnit::computeUuDelayUs()
     switch (optionType) {
         case 2: return 300;
         case 6: return 150;
-        case 7: return 60;
+        case 7: return 500;    // Frequency-domain fronthaul extremely high (0.5 ms)
         default: return 200;
     }
 }

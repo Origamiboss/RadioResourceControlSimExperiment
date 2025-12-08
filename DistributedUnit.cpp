@@ -117,10 +117,10 @@ int DistributedUnit::computeUuDelayUs()
 {
     switch (optionType)
     {
-        case 2:   return 300;  // High latency (PDCP high-level)
-        case 6:   return 150;  // Medium (RLC locally processed)
-        case 7:   return 60;   // Low latency (PHY split)
-        default:  return 200;
+        case 2: return 400;      // Slower radio in high-level splits
+        case 6: return 250;      // Mid-level
+        case 7: return 600;      // 7.1 overloaded fronthaul -> high radio latency
+        default: return 200;
     }
 }
 
@@ -128,9 +128,9 @@ int DistributedUnit::computeProcessingDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 200;    // DU does small forwarding only
-        case 6: return 3000;   // DU does RLC processing: 3 ms
-        case 7: return 10000;  // DU heavy PHY: 10 ms
+        case 2: return 100;      // Slightly exaggerated idle DU
+        case 6: return 3000;     // Heavy RLC + extra PHY load
+        case 7: return 5000;     // Option 7.1 low-PHY meltdown under attack
         default: return 300;
     }
 }
