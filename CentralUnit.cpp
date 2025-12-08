@@ -192,8 +192,8 @@ int CentralUnit::computeProcessingDelayUs()
 {
     switch (optionType) {
         case 2: return 1000;   // PDCP (1 ms) - you can tune this
-        case 6: return 2000;   // Moderate (2 ms)
-        case 7: return 3500;   // Option 7.1 high-PHY heavy (3.5 ms realistic)
+        case 6: return 4000;   // Moderate (2 ms)
+        case 7: return 6000;   // Option 7.1 high-PHY heavy (3.5 ms realistic)
         default: return 500;
     }
 }
@@ -201,9 +201,9 @@ int CentralUnit::computeProcessingDelayUs()
 int CentralUnit::computeUuDelayUs()
 {
     switch (optionType) {
-        case 2: return 100;
-        case 6: return 300;
-        case 7: return 500;    // lower PHY in DU for 7.1 => CU Uu smaller, but fronthaul involved
+        case 2: return 1000;
+        case 6: return 2000;
+        case 7: return 3000;    // lower PHY in DU for 7.1 => CU Uu smaller, but fronthaul involved
         default: return 200;
     }
 }

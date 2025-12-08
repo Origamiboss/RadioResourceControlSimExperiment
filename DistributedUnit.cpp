@@ -117,9 +117,9 @@ int DistributedUnit::computeUuDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 600;      // Slower radio in high-level splits
-        case 6: return 800;      // Mid-level
-        case 7: return 1000;      // 7.1 overloaded fronthaul -> high radio latency
+        case 2: return 1000;      // Slower radio in high-level splits
+        case 6: return 4000;      // Mid-level
+        case 7: return 6000;      // 7.1 overloaded fronthaul -> high radio latency
         default: return 200;
     }
 }
@@ -128,9 +128,9 @@ int DistributedUnit::computeProcessingDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 600;      // Slightly exaggerated idle DU
-        case 6: return 800;     // Heavy RLC + extra PHY load
-        case 7: return 1200;     // Option 7.1 low-PHY meltdown under attack
+        case 2: return 1000;      // Slightly exaggerated idle DU
+        case 6: return 2000;     // Heavy RLC + extra PHY load
+        case 7: return 3000;     // Option 7.1 low-PHY meltdown under attack
         default: return 300;
     }
 }
