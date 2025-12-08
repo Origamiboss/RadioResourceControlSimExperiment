@@ -38,8 +38,6 @@ public:
 
     void sendRrcRelease();
 
-    void sendRrcConnectionSetup();
-
     void sendDummyData();
 
     void receiveRrcConnectionRequest();

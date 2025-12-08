@@ -74,15 +74,6 @@ void CentralUnit::sendRrcRelease() {
         state = RrcState::RRC_IDLE;
     }
 }
-void CentralUnit::sendRrcConnectionSetup() {
-
-    pdcp::PDcp::Bytes payload = {0x50, 0xAA};
-    auto pdcpPacket = pdcp_->encapsulate(payload);
-
-    std::cout << "Sent RRCConnectionSetup From CU\n";
-
-    f1uBuffer->sendPacket(pdcpPacket); 
-}
 void CentralUnit::sendDummyData() {
     if (state == RrcState::RRC_CONNECTED) {
         const size_t dataSize = 1 * 1024 * 1024;  // 1 MB dummy packet
@@ -114,7 +105,7 @@ void CentralUnit::receiveRrcConnectionComplete() {
 }
 void CentralUnit::receiveRrcConnectionRequest() {
     std::cout << "[CU] Received RRC Request\n";
-    sendRrcConnectionSetup();
+    sendRrcSetup();
     state = RrcState::RRC_SETUP_SENT;
 }
 
