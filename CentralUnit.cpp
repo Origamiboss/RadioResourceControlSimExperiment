@@ -201,9 +201,9 @@ int CentralUnit::computeProcessingDelayUs()
 int CentralUnit::computeUuDelayUs()
 {
     switch (optionType) {
-        case 2: return 300;
-        case 6: return 400;
-        case 7: return 120;    // lower PHY in DU for 7.1 => CU Uu smaller, but fronthaul involved
+        case 2: return 100;
+        case 6: return 300;
+        case 7: return 500;    // lower PHY in DU for 7.1 => CU Uu smaller, but fronthaul involved
         default: return 200;
     }
 }
