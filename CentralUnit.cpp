@@ -136,7 +136,7 @@ int CentralUnit::computeUuDelayUs()
 {
     switch (optionType) {
         case 2: return 300;
-        case 6: return 150;
+        case 6: return 400;
         case 7: return 500;    // Frequency-domain fronthaul extremely high (0.5 ms)
         default: return 200;
     }

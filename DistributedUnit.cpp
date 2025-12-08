@@ -118,7 +118,7 @@ int DistributedUnit::computeUuDelayUs()
     switch (optionType)
     {
         case 2: return 400;      // Slower radio in high-level splits
-        case 6: return 250;      // Mid-level
+        case 6: return 500;      // Mid-level
         case 7: return 600;      // 7.1 overloaded fronthaul -> high radio latency
         default: return 200;
     }
