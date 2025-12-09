@@ -191,9 +191,9 @@ int CentralUnit::computeFronthaulDelayUs(size_t sizeBytes)
 int CentralUnit::computeProcessingDelayUs()
 {
     switch (optionType) {
-        case 2: return 10000;   // fastest
-        case 6: return 50000;   // medium
-        case 7: return 100000;   // slowest (7.1 moved heavy high-PHY to CU if you prefer)
+        case 2: return 100;   // fastest
+        case 6: return 300;   // medium
+        case 7: return 600;   // slowest (7.1 moved heavy high-PHY to CU if you prefer)
         default: return 500;
     }
 }
@@ -201,9 +201,9 @@ int CentralUnit::computeProcessingDelayUs()
 int CentralUnit::computeUuDelayUs()
 {
     switch (optionType) {
-        case 2: return 10000;   // fastest
-        case 6: return 50000;   // medium
-        case 7: return 100000;   // slowest (7.1 moved heavy high-PHY to CU if you prefer)
+        case 2: return 100;   // fastest
+        case 6: return 300;   // medium
+        case 7: return 600;   // slowest (7.1 moved heavy high-PHY to CU if you prefer)
         default: return 500;
     }
 }

@@ -123,11 +123,18 @@ void UeRrc::checkForPackets() {
     }
     else if (data == Bytes{0x5F, 0x21}) {
         receiveRrcRelease();
+    }else {
+        cout << "[UE]: Recieved Dummy Data" << endl;
+        dummyPacketCount++;
     }
 }
 
 RrcState UeRrc::getState() {
     return state;
+}
+
+int retrievedDummyPackets(){
+    return dummyPacketCount;
 }
 
 void UeRrc::log(const std::string& msg) {

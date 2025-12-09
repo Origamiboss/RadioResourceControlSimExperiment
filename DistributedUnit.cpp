@@ -118,9 +118,9 @@ int DistributedUnit::computeUuDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 10000;   // fastest
-        case 6: return 50000;   // medium
-        case 7: return 100000;   // slowest (7.1 moved heavy high-PHY to CU if you prefer)
+        case 2: return 50;    // fastest radio latency (us)
+        case 6: return 150;   // medium
+        case 7: return 300;   // slowest (7.1)
         default: return 200;
     }
 }
@@ -129,9 +129,9 @@ int DistributedUnit::computeProcessingDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 10000;   // fastest
-        case 6: return 50000;   // medium
-        case 7: return 100000;   // slowest (7.1 moved heavy high-PHY to CU if you prefer)
+        case 2: return 80;    // fastest processing
+        case 6: return 300;   // medium
+        case 7: return 600;   // slowest
         default: return 300;
     }
 }

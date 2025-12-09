@@ -140,18 +140,24 @@ void SimulationType(int optionType){
         std::cout << "[UE] Sent RRC Request\n";
         ue.checkForPackets();
         bool sentComplete = false;
-        while(!sentComplete){
-            ue.checkForPackets();
-            if (ue.getState() == RrcState::RRC_CONNECTED) {
-                ue.sendRrcConnectionComplete();
-                std::cout << "[UE] Sent RRC Complete\n";
-                sentComplete = true;
-            }
-        }
+        
 
-        for(int i = 0; i < 200; i++){
+        // (Optional) dummy data
+        int dummyPackets = 200;
+        for (int i = 0; i < dummyPackets; i++) {
+            ue.sendDummyData();
+            ue.checkForPackets();
+        }
+        //Try and get all the dummy packets back
+        while (ue.retrievedDummyPackets() < dummyPackets) {
+            ue.checkForPackets();
             ue.sendDummyData();
         }
+        
+
+
+        // ---- Send Connection Complete ----
+        ue.sendRrcConnectionComplete();
 
         while (running) {
             ue.checkForPackets();
@@ -250,14 +256,24 @@ void ExploitDoSSimulationType(int optionType){
 
         if (!running) return;  // stop if attacker crushed UE
 
-        // ---- Send Connection Complete ----
-        ue.sendRrcConnectionComplete();
+        
 
         // (Optional) dummy data
-        for (int i = 0; i < 200; i++) {
+        int dummyPackets = 200;
+        for (int i = 0; i < dummyPackets; i++) {
+            ue.sendDummyData();
+            ue.checkForPackets();
+        }
+        //Try and get all the dummy packets back
+        while (ue.retrievedDummyPackets() < dummyPackets) {
+            ue.checkForPackets();
             ue.sendDummyData();
         }
+        
 
+
+        // ---- Send Connection Complete ----
+        ue.sendRrcConnectionComplete();
         // ---- Wait for RRC Release ----
         while (running) {
             ue.checkForPackets();
@@ -354,11 +370,22 @@ void FuzzingExploitSimulation(int optionType){
             return;
         }
 
-        ue.sendRrcConnectionComplete();
-
-        for (int i = 0; i < 200; i++)
+        // (Optional) dummy data
+        int dummyPackets = 200;
+        for (int i = 0; i < dummyPackets; i++) {
             ue.sendDummyData();
+            ue.checkForPackets();
+        }
+        //Try and get all the dummy packets back
+        while (ue.retrievedDummyPackets() < dummyPackets) {
+            ue.checkForPackets();
+            ue.sendDummyData();
+        }
+        
 
+
+        // ---- Send Connection Complete ----
+        ue.sendRrcConnectionComplete();
         while (running) {
             ue.checkForPackets();
             if (ue.getState() == RrcState::RRC_IDLE) {

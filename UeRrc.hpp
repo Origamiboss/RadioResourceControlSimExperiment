@@ -18,6 +18,7 @@ private:
     PacketBuffer* myBuffer;
     PacketBuffer* theirBuffer;
 
+    int dummyPacketCount = 0;
     
 
 public:
@@ -41,6 +42,8 @@ public:
     void checkForPackets();
 
     RrcState getState();
+
+    int retrievedDummyPackets();
 
     void log(const std::string& msg);
     
