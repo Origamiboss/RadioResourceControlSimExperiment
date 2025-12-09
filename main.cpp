@@ -218,44 +218,10 @@ void ExploitDoSSimulationType(int optionType){
         attacker.attackTargetBuffer();
     });
 
-    std::thread ueThread([&]() {
-        int retries = 0;
-        bool connected = false;
-
-        // ---- Send initial RRC Request ----
-        ue.sendRrcConnectionRequest();
-        auto tStart = clock::now();
-
-        while (running && !connected) {
-
-            ue.checkForPackets();
-
-            // Check if DU/CU responded with RRC Setup
-            if (ue.getState() == RrcState::RRC_CONNECTED) {
-                connected = true;
-                break;
-            }
-
-            // Timer expired?
-            if (elapsedMs(tStart) > UeRrc::T300_MS) {
-
-                if (retries >= UeRrc::MAX_RRC_RETRIES) {
-                    std::cout << "[UE] T300 expired: MAX RETRIES REACHED — giving up.\n";
-                    running = false;   // End simulation (UE fails to connect)
-                    return;
-                }
-
-                retries++;
-                std::cout << "[UE] T300 timeout — retransmitting RRC Connection Request (retry "
-                          << retries << ")\n";
-
-                ue.sendRrcConnectionRequest();
-                tStart = clock::now();
-            }
-        }
-
-        if (!running) return;  // stop if attacker crushed UE
-
+    ue.sendRrcConnectionRequest();
+        std::cout << "[UE] Sent RRC Request\n";
+        ue.checkForPackets();
+        bool sentComplete = false;
         
 
         // (Optional) dummy data
@@ -274,7 +240,7 @@ void ExploitDoSSimulationType(int optionType){
 
         // ---- Send Connection Complete ----
         ue.sendRrcConnectionComplete();
-        // ---- Wait for RRC Release ----
+
         while (running) {
             ue.checkForPackets();
             if (ue.getState() == RrcState::RRC_IDLE) {
@@ -282,6 +248,7 @@ void ExploitDoSSimulationType(int optionType){
                 break;
             }
         }
+
     });
 
     std::thread duThread([&]() {
@@ -337,38 +304,11 @@ void FuzzingExploitSimulation(int optionType){
     });
 
     // ---- UE Thread (same as regular DoS simulation) ----
-    std::thread ueThread([&]() {
-        ue.sendRrcConnectionRequest();
-        auto tStart = clock::now();
-        int retries = 0;
-        bool connected = false;
-
-        while (running && !connected) {
-            ue.checkForPackets();
-
-            if (ue.getState() == RrcState::RRC_CONNECTED) {
-                connected = true;
-                break;
-            }
-
-            if (elapsedMs(tStart) > UeRrc::T300_MS) {
-                if (retries >= UeRrc::MAX_RRC_RETRIES) {
-                    std::cout << "[UE] FUZZING prevented RRC setup — giving up.\n";
-                    running = false;
-                    break;
-                }
-
-                retries++;
-                std::cout << "[UE] T300 timeout (fuzzing overload) — retry " << retries << "\n";
-                ue.sendRrcConnectionRequest();
-                tStart = clock::now();
-            }
-        }
-
-        if (!connected) {
-            running = false;
-            return;
-        }
+    ue.sendRrcConnectionRequest();
+        std::cout << "[UE] Sent RRC Request\n";
+        ue.checkForPackets();
+        bool sentComplete = false;
+        
 
         // (Optional) dummy data
         int dummyPackets = 200;
@@ -386,6 +326,7 @@ void FuzzingExploitSimulation(int optionType){
 
         // ---- Send Connection Complete ----
         ue.sendRrcConnectionComplete();
+
         while (running) {
             ue.checkForPackets();
             if (ue.getState() == RrcState::RRC_IDLE) {
@@ -393,6 +334,7 @@ void FuzzingExploitSimulation(int optionType){
                 break;
             }
         }
+
     });
 
     // DU Thread
