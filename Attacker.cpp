@@ -22,15 +22,25 @@ Attacker::Attacker(PacketBuffer* targetBuffer, int sizeOfPackets,
 }
 
 pdcp::PDcp::Bytes Attacker::createFuzzingPackets(int numOfBytes) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> dist(0, 255);
 
-    pdcp::PDcp::Bytes payload(numOfBytes);
-    for (int i = 0; i < numOfBytes; i++)
-        payload[i] = static_cast<uint8_t>(dist(gen));
+    // If this is the first fuzz packet, initialize all bytes to 0x00
+    if (!lastFuzzedBytes || lastFuzzedBytes->size() != (size_t)numOfBytes) {
+        lastFuzzedBytes = pdcp::PDcp::Bytes(numOfBytes, 0x00);
+        return *lastFuzzedBytes;
+    }
 
-    return payload;
+    // Increment like a big-endian integer
+    for (int i = numOfBytes - 1; i >= 0; --i) {
+        (*lastFuzzedBytes)[i]++;
+
+        // If it didn't overflow, we stop
+        if ((*lastFuzzedBytes)[i] != 0x00)
+            break;
+
+        // Else, it overflowed (0xFF -> 0x00), continue incrementing the next byte
+    }
+
+    return *lastFuzzedBytes;
 }
 
 void Attacker::DoSAttackStep() {

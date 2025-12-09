@@ -26,6 +26,8 @@ private:
     std::atomic<bool>* running;
     AttackMode mode_;
 
+    std::optional<pdcp::PDcp::Bytes> lastFuzzedBytes;
+
     std::unique_ptr<pdcp::PDcp> pdcp_;
 
     pdcp::PDcp::Bytes createFuzzingPackets(int numOfBytes);
