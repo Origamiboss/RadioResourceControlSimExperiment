@@ -52,7 +52,7 @@ void Attacker::FuzzAttackStep() {
 }
 
 void Attacker::attackTargetBuffer() {
-
+    int runCounter = 0;
     while (running->load()) {
 
         switch (mode_) {
@@ -62,6 +62,8 @@ void Attacker::attackTargetBuffer() {
 
             case AttackMode::FUZZ:
                 FuzzAttackStep();
+                runCounter++;
+                std::cout << "[Attacker] Fuzzing packet #" << runCounter << "\n";
                 std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 break;
 
