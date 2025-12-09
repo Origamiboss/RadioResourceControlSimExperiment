@@ -24,7 +24,7 @@ Attacker::Attacker(PacketBuffer* targetBuffer, int sizeOfPackets,
 pdcp::PDcp::Bytes Attacker::createFuzzingPackets(int numOfBytes) {
 
     // If this is the first fuzz packet, initialize all bytes to 0x00
-    if (!lastFuzzedBytes || lastFuzzedBytes->size() != (size_t)numOfBytes) {
+    if (lastFuzzedBytes.empty() || lastFuzzedBytes.size() != numOfBytes) {
         lastFuzzedBytes = pdcp::PDcp::Bytes(numOfBytes, 0x00);
         return *lastFuzzedBytes;
     }
