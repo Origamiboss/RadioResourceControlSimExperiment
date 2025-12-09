@@ -320,15 +320,10 @@ void FuzzingExploitSimulation(int optionType){
         bool sentComplete = false;
         
 
-        // (Optional) dummy data
-        int dummyPackets = 200;
-        // send dummy packets once
-        for (int i = 0; i < dummyPackets; i++) {
-            ue.sendDummyData();
-        }
+        //Wait for the fuzzing attack to suceed
 
         // wait until all are received
-        while (ue.retrievedDummyPackets() < dummyPackets) {
+        while (ue.getState() != RrcState::RRC_IDLE) {
             ue.checkForPackets();
             std::this_thread::sleep_for(std::chrono::milliseconds(1)); // yield CPU
         }
