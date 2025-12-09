@@ -64,7 +64,7 @@ void Attacker::attackTargetBuffer() {
                 FuzzAttackStep();
                 runCounter++;
                 std::cout << "[Attacker] Fuzzing packet #" << runCounter << "\n";
-                std::this_thread::sleep_for(std::chrono::microseconds(10));
+                std::this_thread::sleep_for(std::chrono::microseconds(20));
                 break;
 
             case AttackMode::HYBRID:
