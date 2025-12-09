@@ -308,6 +308,7 @@ void FuzzingExploitSimulation(int optionType){
     // ---- Start FUZZING attacker thread ----
     std::thread attackerThread([&]() {
         attacker.attackTargetBuffer();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     });
 
     // ---- UE Thread (same as regular DoS simulation) ----
