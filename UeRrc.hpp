@@ -18,7 +18,7 @@ private:
     PacketBuffer* myBuffer;
     PacketBuffer* theirBuffer;
 
-    int dummyPacketCount = 0;
+    int dummyPacketCount;
     
 
 public:
