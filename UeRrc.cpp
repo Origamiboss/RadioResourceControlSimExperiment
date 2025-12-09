@@ -14,7 +14,7 @@ UeRrc::UeRrc(PacketBuffer* myBuffer, PacketBuffer* theirBuffer) {
     this->myBuffer = myBuffer;
     this->theirBuffer = theirBuffer;
 
-    dummyPacketCount = 0;
+    this->dummyPacketCount = 0;
 
     logFile.open("../Logs/ue_rrc_log.txt");
     logFile << "[" << getCurrentTimestamp() << "] UE RRC Layer initialized (State: IDLE)\n";
@@ -126,8 +126,8 @@ void UeRrc::checkForPackets() {
     else if (data == Bytes{0x5F, 0x21}) {
         receiveRrcRelease();
     }else {
-        cout << "[UE]: Recieved Dummy Data" << std::endl;
-        dummyPacketCount++;
+        std::cout << "[UE]: Recieved Dummy Data" << std::endl;
+        this->dummyPacketCount++;
     }
 }
 
@@ -136,7 +136,7 @@ RrcState UeRrc::getState() {
 }
 
 int retrievedDummyPackets(){
-    return dummyPacketCount;
+    return this->dummyPacketCount;
 }
 
 void UeRrc::log(const std::string& msg) {
