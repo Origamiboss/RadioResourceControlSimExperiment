@@ -7,6 +7,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
+#include <iostream>
 
 using Bytes = std::vector<uint8_t>;
 
