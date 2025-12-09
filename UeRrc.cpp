@@ -135,7 +135,7 @@ RrcState UeRrc::getState() {
     return state;
 }
 
-int retrievedDummyPackets(){
+int UeRrc::retrievedDummyPackets(){
     return this->dummyPacketCount;
 }
 
