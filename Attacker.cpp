@@ -25,7 +25,7 @@ pdcp::PDcp::Bytes Attacker::createFuzzingPackets(int numOfBytes) {
     //This is the right one {0x43, 0x34}, lets start it from a little bit before that so Im not here all night
     if (lastFuzzedBytes.empty() || lastFuzzedBytes.size() != (size_t)numOfBytes) {
         lastFuzzedBytes.assign(numOfBytes, 0x33);
-        lastFuzzedBytes = {0x43, 0x34};
+        lastFuzzedBytes = {0x40, 0x34};
         return lastFuzzedBytes;
     }
 
