@@ -218,7 +218,10 @@ void ExploitDoSSimulationType(int optionType){
         attacker.attackTargetBuffer();
     });
 
-    ue.sendRrcConnectionRequest();
+    // ---------- UE Thread ----------
+    std::thread ueThread([&]() {
+
+        ue.sendRrcConnectionRequest();
         std::cout << "[UE] Sent RRC Request\n";
         ue.checkForPackets();
         bool sentComplete = false;
@@ -304,7 +307,10 @@ void FuzzingExploitSimulation(int optionType){
     });
 
     // ---- UE Thread (same as regular DoS simulation) ----
-    ue.sendRrcConnectionRequest();
+    // ---------- UE Thread ----------
+    std::thread ueThread([&]() {
+
+        ue.sendRrcConnectionRequest();
         std::cout << "[UE] Sent RRC Request\n";
         ue.checkForPackets();
         bool sentComplete = false;
