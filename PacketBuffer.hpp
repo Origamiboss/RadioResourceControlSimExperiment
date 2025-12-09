@@ -26,6 +26,8 @@ public:
         // Check if queue is full
         if (buffer.size() >= maxSize) {
             droppedPackets++;   // count as dropped
+            std::cout << "[PacketBuffer] Packet dropped! Total dropped: " 
+                      << droppedPackets.load() << "\n";
             return;             // do NOT push packet
         }
 
