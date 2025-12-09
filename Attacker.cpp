@@ -62,6 +62,7 @@ void Attacker::attackTargetBuffer() {
 
             case AttackMode::FUZZ:
                 FuzzAttackStep();
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
                 break;
 
             case AttackMode::HYBRID:
