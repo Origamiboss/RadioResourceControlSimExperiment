@@ -298,7 +298,7 @@ void FuzzingExploitSimulation(int optionType){
     UeRrc ue(&du_to_ue, &ue_to_du);
 
     // Instead of small packets, fuzzing uses bigger packets
-    Attacker attacker(&ue_to_du, 2, &running, AttackMode::FUZZ);  // 2 bytes fuzzed payload
+    Attacker attacker(&ue_to_du, 2, &running, Attacker::AttackMode::FUZZ);  // 2 bytes fuzzed payload
 
     DistributedUnit du(&ue_to_du, &cu_to_du, &du_to_cu, &du_to_ue, optionType);
     CentralUnit cu(&cu_to_du, &du_to_cu, optionType);
