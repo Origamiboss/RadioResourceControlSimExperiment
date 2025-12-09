@@ -121,7 +121,6 @@ void UeRrc::checkForPackets() {
 
     if (data == Bytes{0x50, 0xAA}) {
         receiveRrcConnectionSetup();
-        sendRrcConnectionComplete();
     }
     else if (data == Bytes{0x5F, 0x21}) {
         receiveRrcRelease();

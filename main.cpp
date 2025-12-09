@@ -147,12 +147,14 @@ void SimulationType(int optionType){
         // send dummy packets once
         for (int i = 0; i < dummyPackets; i++) {
             ue.sendDummyData();
+            ue.checkForPackets();
         }
 
         // wait until all are received
         while (ue.retrievedDummyPackets() < dummyPackets) {
             ue.checkForPackets();
             std::this_thread::sleep_for(std::chrono::milliseconds(1)); // yield CPU
+            ue.sendDummyData();
         }
         
 
