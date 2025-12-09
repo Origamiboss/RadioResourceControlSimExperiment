@@ -23,24 +23,20 @@ Attacker::Attacker(PacketBuffer* targetBuffer, int sizeOfPackets,
 
 pdcp::PDcp::Bytes Attacker::createFuzzingPackets(int numOfBytes) {
 
-    // If this is the first fuzz packet, initialize all bytes to 0x00
-    if (lastFuzzedBytes.empty() || lastFuzzedBytes.size() != numOfBytes) {
-        lastFuzzedBytes = pdcp::PDcp::Bytes(numOfBytes, 0x00);
-        return *lastFuzzedBytes;
+    if (lastFuzzedBytes.empty() || lastFuzzedBytes.size() != (size_t)numOfBytes) {
+        lastFuzzedBytes.assign(numOfBytes, 0x00);
+        return lastFuzzedBytes;
     }
 
-    // Increment like a big-endian integer
+    // big-endian increment
     for (int i = numOfBytes - 1; i >= 0; --i) {
-        (*lastFuzzedBytes)[i]++;
+        lastFuzzedBytes[i]++;
 
-        // If it didn't overflow, we stop
-        if ((*lastFuzzedBytes)[i] != 0x00)
+        if (lastFuzzedBytes[i] != 0x00)
             break;
-
-        // Else, it overflowed (0xFF -> 0x00), continue incrementing the next byte
     }
 
-    return *lastFuzzedBytes;
+    return lastFuzzedBytes;
 }
 
 void Attacker::DoSAttackStep() {
