@@ -129,9 +129,9 @@ int DistributedUnit::computeProcessingDelayUs()
 {
     switch (optionType)
     {
-        case 2: return 80;    // fastest processing
+        case 2: return 600;    // fastest processing
         case 6: return 300;   // medium
-        case 7: return 600;   // slowest
+        case 7: return 80;   // slowest
         default: return 300;
     }
 }
